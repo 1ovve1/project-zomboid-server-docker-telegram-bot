@@ -1,23 +1,34 @@
 {
-    "name": "telegram-bot/example-bot",
+    "name": "1owe1/project-zomboid-server-docker-telegram-bot",
     "type": "project",
-    "description": "PHP Telegram Bot Example",
-    "keywords": ["telegram", "bot", "example"],
+    "description": "Docker PZ server and telegram bit out the box",
+    "keywords": ["telegram", "bot", "project zomboid", "server", "docker"],
     "license": "MIT",
-    "homepage": "https://github.com/php-telegram-bot/example-bot",
+    "homepage": "https://github.com/1ovve1/project-zomboid-server-docker-telegram-bot",
     "support": {
-        "issues": "https://github.com/php-telegram-bot/example-bot/issues",
-        "source": "https://github.com/php-telegram-bot/example-bot"
+        "source": "https://github.com/1ovve1/project-zomboid-server-docker-telegram-bot"
     },
     "authors": [
+        {
+            "name": "Adnrey Bulavskiy",
+            "homepage": "https://github.com/1ovve1",
+            "role": "Developer"
+        },
         {
             "name": "PHP Telegram Bot Team",
             "homepage": "https://github.com/php-telegram-bot/example-bot/graphs/contributors",
             "role": "Developer"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "PZBot\\": "bot/"
+        }
+    },
     "require": {
-        "longman/telegram-bot": "*"
+        "longman/telegram-bot": "*",
+        "vlucas/phpdotenv": "^5.5",
+        "1owe1/query-box": "^1.0"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.2",

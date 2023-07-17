@@ -4,9 +4,5 @@ data/*
 workshop-mods/*
 !workshop-mods/.gitkeep
 .env
-
-# bot files
-composer.phar
-composer.lock
-config.php
-vendor
+/vendor
+/composer.lock
