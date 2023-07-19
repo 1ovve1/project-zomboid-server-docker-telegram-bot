@@ -5,9 +5,20 @@ namespace PZBot\Server;
 
 enum Status: string
 {
-  case ACTIVE = "ACTIVE 🍆";
+  case ACTIVE = "ACTIVE";
   case RESTART = "RESTART 🔃";
   case DOWN = "DOWN ☠";
   case PENDING = "PENDING ⏰";
   case UNDEFINED = "UNDEFINED 🤡";
+
+  function withSmile(): string
+  {
+    return match($this) {
+      self::ACTIVE => "ACTIVE 🍆",
+      self::RESTART => "RESTART 🔃",
+      self::DOWN => "DOWN ☠",
+      self::PENDING => "PENDING ⏰",
+      default => "UNDEFINED 🤡",
+    };
+  }
 }

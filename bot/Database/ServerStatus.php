@@ -38,7 +38,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
   
       Request::sendToActiveChats(
         'sendMessage',
-        ["text" => "Server status update... {$status->value}"],
+        ["text" => "Server status update... {$status->withSmile()}"],
         [
           'groups'      => true,
           'supergroups' => true,
@@ -57,7 +57,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
 
   public static function getStatus(): Status
   {
-    $queryResult = ServerStatus::select(["status"])->orderBy(["date"], false)->save();
+    $queryResult = ServerStatus::select(["status"])->orderBy(["id"], false)->limit(1)->save();
 
     if ($queryResult->isNotEmpty()) {
       [["status" => $status]] = $queryResult->fetchAll();
