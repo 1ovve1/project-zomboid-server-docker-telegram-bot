@@ -10,15 +10,6 @@ return [
         ],
     ],
 
-    'creator' => [
-        'link' => 'https://t.me/b3nchm4d3',
-    ],
-
-    // Admins ids (for notification)
-    'admins'       => [
-        
-    ],
-
     // up and down load paths
     'paths'        => [
         'download' => __DIR__ . '/Download',

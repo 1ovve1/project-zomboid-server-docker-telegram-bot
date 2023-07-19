@@ -32,7 +32,7 @@ class StatusCommand extends SystemCommand
     /**
      * @var bool
      */
-    protected $private_only = true;
+    protected $private_only = false;
 
     /**
      * Main command execution
@@ -46,7 +46,7 @@ class StatusCommand extends SystemCommand
     
         return $this->replyToChat(sprintf(
             "Server status: %s\nIP: %s\nPort: %d\nPassword: %s",
-            $status->value, $_ENV["IP"], $_ENV["PORT"], $_ENV["PASSWORD"] ?? "No"
+            $status->value, $_ENV["HOST_IP"], $_ENV["PORT"], $_ENV["PASSWORD"] ?? "No"
         ));
     }
 }

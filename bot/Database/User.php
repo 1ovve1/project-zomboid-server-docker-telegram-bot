@@ -28,9 +28,13 @@ class User extends QueryBuilder
    */
   public static function isAdmin(int $id): bool
   {
-    $adminList = $_ENV["CONFIG"]["admins"];
+    $adminList = $_ENV["BOT_ADMIN_IDS"];
 
-    return in_array($id, $adminList);
+    if (is_array($adminList)) {
+      return in_array($id, $adminList);
+    } else {
+      return false;
+    }
   }
 
   public static function isNotAdmin(int $id): bool

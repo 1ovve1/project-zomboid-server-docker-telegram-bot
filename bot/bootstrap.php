@@ -25,6 +25,7 @@ $dotenv->load();
 /**
  * Additional config params
  */
+$_ENV["BOT_ADMIN_IDS"] = explode(',', $_ENV["BOT_ADMIN_IDS"]);
 $_ENV["DB_TYPE"] = "mysql"; // fixed bd driver for pdo, need for QueryBox initialization
 $_ENV["LOG_QUERY_RESULTS"] = false;
 $_ENV["CONFIG"] = require BOT_DIR . "/config.php"; // additional config params

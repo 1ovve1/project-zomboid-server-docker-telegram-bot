@@ -9,17 +9,49 @@ use QueryBox\QueryBuilder\QueryBuilder;
 
 class ServerStatus extends QueryBuilder implements MigrateAble
 {
+  private static ?Status $lastStatus = null;
+
+  protected static function getLastStatus(): Status 
+  {
+    if (self::$lastStatus === null) {
+      self::setLastStatus(self::getStatus());
+    }
+
+    return self::$lastStatus;
+  }
+
+  protected static function setLastStatus(Status $status): void
+  {
+    self::$lastStatus = $status;
+  }
+
   /**
    * @param Status $status
    * @return void
    */
   public static function updateStatus(Status $status): void
   {
-    TelegramLog::warning("Server status update on '{$status->value}'");
 
-    ServerStatus::insert([
-      "status" => $status->value
-    ])->save();
+    if (self::getLastStatus() !== $status) {
+      TelegramLog::warning("Server status update on '{$status->value}'");
+  
+      Request::sendToActiveChats(
+        'sendMessage',
+        ["text" => "SERVER STATUS UPDATE: {$status->value}"],
+        [
+          'groups'      => true,
+          'supergroups' => true,
+          'channels'    => false,
+          // 'users'       => true,
+        ]
+      );
+  
+      ServerStatus::insert([
+        "status" => $status->value
+      ])->save();
+
+      self::setLastStatus($status);
+    }
   }
 
   public static function getStatus(): Status
@@ -32,6 +64,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
       $statusEnum = Status::tryFrom($status);
 
       if ($statusEnum !== null) {
+
         return $statusEnum;
       }
 
@@ -45,7 +78,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isRestarted(): bool
   {
-      return ServerStatus::getStatus() === Status::RESTART;
+      return ServerStatus::getLastStatus() === Status::RESTART;
   }
 
   /**
@@ -53,7 +86,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isPending(): bool
   {
-      return ServerStatus::getStatus() === Status::PENDIGN;
+      return ServerStatus::getLastStatus() === Status::PENDIGN;
   }
 
   /**
@@ -61,7 +94,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isDown(): bool
   {
-      return ServerStatus::getStatus() === Status::DOWN;
+      return ServerStatus::getLastStatus() === Status::DOWN;
   }
 
   /**
@@ -69,7 +102,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isActive(): bool
   {
-      return ServerStatus::getStatus() === Status::ACTIVE;
+      return ServerStatus::getLastStatus() === Status::ACTIVE;
   }
 
   /**
@@ -77,7 +110,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isUndefined(): bool
   {
-      return ServerStatus::getStatus() === Status::UNDEFINED;
+      return ServerStatus::getLastStatus() === Status::UNDEFINED;
   }
 
 

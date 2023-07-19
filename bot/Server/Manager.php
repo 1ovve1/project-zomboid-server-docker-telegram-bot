@@ -7,9 +7,9 @@ use PZBot\Exceptions\ServerManageException;
 
 class Manager 
 {
-  const CMD_SHUTDOWN = "sudo docker-compose down";
-  const CMD_UP = "sudo docker-compose up -d";
-  const CMD_RESTART = "sudo docker-compose down && sudo docker-compose up";
+  const CMD_SHUTDOWN = "sudo docker-compose down && echo 1";
+  const CMD_UP = "sudo docker-compose up -d && echo 1";
+  const CMD_RESTART = "sudo docker-compose down && sudo docker-compose up -d && echo 1";
 
   /**
    * Shutdown server
@@ -40,7 +40,7 @@ class Manager
    */
   public static function up(): void 
   {
-    if (ServerStatus::isPending()) {
+    if (ServerStatus::isPending() || ServerStatus::isActive()) {
       throw new ServerManageException("Server already up. Please wait or contact creator {$_ENV['CONFIG']['creator']['link']}!");
     }
 
