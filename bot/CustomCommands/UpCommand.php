@@ -7,7 +7,7 @@ use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\TelegramLog;
 use PZBot\Commands\AdminCommand;
 use PZBot\Database\User;
-use PZBot\Exceptions\ServerManageException;
+use PZBot\Exceptions\Checked\CheckedException;
 use PZBot\Server\Manager;
 
 class UpCommand extends AdminCommand
@@ -45,17 +45,9 @@ class UpCommand extends AdminCommand
      */
     public function execute(): ServerResponse
     {
-        $user = $this->getMessage()->getFrom();
-        
-        TelegramLog::info("User try to restart server", $user->getRawData());
-
-        if (User::isNotAdmin($user->getId())) {
-            throw new TelegramException("User is not admin");
-        }
-
         try {
             Manager::up();
-        } catch (ServerManageException $e) {
+        } catch (CheckedException $e) {
             return $this->replyToChat($e->getMessage());    
         }
     

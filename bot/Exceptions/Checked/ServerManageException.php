@@ -1,16 +1,15 @@
 <?php declare(strict_types=1);
 
 
-namespace PZBot\Exceptions;
+namespace PZBot\Exceptions\Checked;
 
 use Longman\TelegramBot\TelegramLog;
-use RuntimeException;
 
-class ServerManageException extends RuntimeException
+class ServerManageException extends CheckedException
 {
   const CODE = 403;
 
-  public function __construct($reason)
+  public function __construct(string $reason)
   {
     TelegramLog::warning("Server manage exception cause: {$reason}");
 

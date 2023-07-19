@@ -3,7 +3,8 @@
 namespace PZBot\Server;
 
 use PZBot\Database\ServerStatus;
-use PZBot\Exceptions\ServerManageException;
+use PZBot\Exceptions\Checked\ServerManageException;
+use PZBot\Exceptions\Checked\UnknownServerManagerError;
 
 class Manager 
 {
@@ -16,6 +17,7 @@ class Manager
    *
    * @return void
    * @throws ServerManageException
+   * @throws UnknownServerManagerError
    */
   public static function down() 
   {
@@ -26,7 +28,7 @@ class Manager
     $status = shell_exec(self::CMD_SHUTDOWN);
 
     if ($status === null or $status === false) {
-      throw new ServerManageException("Failed to shutdown server: please contact creator {$_ENV['CONFIG']['creator']['link']}");
+      throw new UnknownServerManagerError("Failed to shutdown server");
     }
 
     ServerStatus::updateStatus(Status::DOWN);
@@ -37,17 +39,18 @@ class Manager
    *
    * @return void
    * @throws ServerManageException
+   * @throws UnknownServerManagerError
    */
   public static function up(): void 
   {
     if (ServerStatus::isPending() || ServerStatus::isActive()) {
-      throw new ServerManageException("Server already up. Please wait or contact creator {$_ENV['CONFIG']['creator']['link']}!");
+      throw new ServerManageException("Server already up. Please wait!");
     }
 
     $status = shell_exec(self::CMD_UP);
 
     if ($status === null or $status === false) {
-      throw new ServerManageException("Failed to up server: please contact creator {$_ENV['CONFIG']['creator']['link']}");
+      throw new UnknownServerManagerError("Failed to up server");
     }
 
     ServerStatus::updateStatus(Status::DOWN);
@@ -58,6 +61,7 @@ class Manager
    *
    * @return void
    * @throws ServerManageException
+   * @throws UnknownServerManagerError
    */
   public static function restart(): void 
   {
@@ -68,7 +72,7 @@ class Manager
     $status = shell_exec(self::CMD_RESTART);
 
     if ($status === null or $status === false) {
-      throw new ServerManageException("Failed to restart server: please contact creator {$_ENV['CONFIG']['creator']['link']}");
+      throw new UnknownServerManagerError("Failed to restart server");
     }
   }
 }

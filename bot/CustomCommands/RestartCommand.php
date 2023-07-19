@@ -6,6 +6,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\TelegramLog;
 use PZBot\Commands\AdminCommand;
+use PZBot\Exceptions\Checked\CheckedException;
 use PZBot\Exceptions\ServerManageException;
 use PZBot\Server\Manager;
 
@@ -44,13 +45,9 @@ class RestartCommand extends AdminCommand
      */
     public function execute(): ServerResponse
     {
-        $user = $this->getMessage()->getFrom();
-        
-        TelegramLog::info("User try to restart server", $user->getRawData());
-
         try {
             Manager::restart();
-        } catch (ServerManageException $e) {
+        } catch (CheckedException $e) {
             return $this->replyToChat($e->getMessage());    
         }
     
