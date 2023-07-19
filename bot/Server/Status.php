@@ -6,10 +6,10 @@ namespace PZBot\Server;
 enum Status: string
 {
   case ACTIVE = "ACTIVE";
-  case RESTART = "RESTART 🔃";
-  case DOWN = "DOWN ☠";
-  case PENDING = "PENDING ⏰";
-  case UNDEFINED = "UNDEFINED 🤡";
+  case RESTART = "RESTART";
+  case DOWN = "DOWN";
+  case PENDING = "PENDING";
+  case UNDEFINED = "UNDEFINED";
 
   function withSmile(): string
   {

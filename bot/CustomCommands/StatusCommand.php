@@ -42,7 +42,7 @@ class StatusCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-       $status = ServerStatus::getStatus();
+       $status = ServerStatus::getLastStatus();
     
         return $this->replyToChat(sprintf(
             "🤖 Server status: %s\n🏠 IP: %s\n🕳 Port: %d\n㊙ Password: %s",

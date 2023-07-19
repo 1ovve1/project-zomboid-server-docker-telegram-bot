@@ -9,8 +9,8 @@ use PZBot\Exceptions\Checked\UnknownServerManagerError;
 class Manager 
 {
   const CMD_SHUTDOWN = "sudo docker-compose down && echo 1";
-  const CMD_UP = "sudo docker-compose up -d && echo 1";
-  const CMD_RESTART = "sudo docker-compose down && sudo docker-compose up -d && echo 1";
+  const CMD_UP = "rm ./data/Logs/*.txt && sudo docker-compose up -d && echo 1";
+  const CMD_RESTART = "sudo docker-compose down && rm ./data/Logs/*.txt && sudo docker-compose up -d && echo 1";
 
   /**
    * Shutdown server

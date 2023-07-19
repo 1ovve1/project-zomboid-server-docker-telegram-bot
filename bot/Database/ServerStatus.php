@@ -12,7 +12,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
 {
   private static ?Status $lastStatus = null;
 
-  protected static function getLastStatus(): Status 
+  public static function getLastStatus(): Status 
   {
     if (self::$lastStatus === null) {
       self::setLastStatus(self::getStatus());

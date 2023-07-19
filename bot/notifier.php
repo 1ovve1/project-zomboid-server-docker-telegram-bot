@@ -9,10 +9,7 @@ $serverIsActive = fn() => shell_exec('grep "Chat server successfully initialized
 if ($serverIsUp() === "true") {
 
   if ($serverIsActive()) {
-    sleep(2);
-    if ($serverIsActive()) {
-      ServerStatus::updateStatus(Status::ACTIVE);
-    }
+    ServerStatus::updateStatus(Status::ACTIVE);
   } else {
     if (!ServerStatus::isRestarted()) {
       ServerStatus::updateStatus(Status::PENDING);
