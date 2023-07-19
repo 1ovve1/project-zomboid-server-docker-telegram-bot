@@ -53,7 +53,7 @@ class Manager
       throw new UnknownServerManagerError("Failed to up server");
     }
 
-    ServerStatus::updateStatus(Status::DOWN);
+    ServerStatus::updateStatus(Status::PENDING);
   }
 
   /**

@@ -22,7 +22,7 @@ abstract class AdminCommand extends SystemCommand
     {
         $this->user = $this->getMessage()->getFrom();
         
-        TelegramLog::info("User try to manage server", $this->user->getRawData());
+        TelegramLog::warinig("User try to manage server", $this->user->getRawData());
 
         if (User::isNotAdmin($this->user->getId())) {
             throw new TelegramException("User is not admin");

@@ -45,7 +45,7 @@ class StatusCommand extends SystemCommand
        $status = ServerStatus::getStatus();
     
         return $this->replyToChat(sprintf(
-            "Server status: %s\nIP: %s\nPort: %d\nPassword: %s",
+            "🤖 Server status: %s\n🏠 IP: %s\n🕳 Port: %d\n㊙ Password: %s",
             $status->value, $_ENV["HOST_IP"], $_ENV["PORT"], $_ENV["PASSWORD"] ?? "No"
         ));
     }

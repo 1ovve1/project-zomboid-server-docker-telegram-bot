@@ -5,9 +5,9 @@ namespace PZBot\Server;
 
 enum Status: string
 {
-  case ACTIVE = "ACTIVE";
-  case RESTART = "RESTART";
-  case DOWN = "DOWN";
-  case PENDIGN = "PENDING";
-  case UNDEFINED = "UNDEFINED";
+  case ACTIVE = "ACTIVE 🍆";
+  case RESTART = "RESTART 🔃";
+  case DOWN = "DOWN ☠";
+  case PENDING = "PENDING ⏰";
+  case UNDEFINED = "UNDEFINED 🤡";
 }

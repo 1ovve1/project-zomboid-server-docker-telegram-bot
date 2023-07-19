@@ -38,12 +38,12 @@ class ServerStatus extends QueryBuilder implements MigrateAble
   
       Request::sendToActiveChats(
         'sendMessage',
-        ["text" => "SERVER STATUS UPDATE: {$status->value}"],
+        ["text" => "Server status update... {$status->value}"],
         [
           'groups'      => true,
           'supergroups' => true,
           'channels'    => false,
-          // 'users'       => true,
+          'users'       => false,
         ]
       );
   
@@ -87,7 +87,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isPending(): bool
   {
-      return ServerStatus::getLastStatus() === Status::PENDIGN;
+      return ServerStatus::getLastStatus() === Status::PENDING;
   }
 
   /**
