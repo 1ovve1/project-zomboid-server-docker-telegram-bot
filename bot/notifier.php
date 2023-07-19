@@ -1,6 +1,5 @@
 <?php
 
-use Longman\TelegramBot\Request;
 use PZBot\Database\ServerStatus;
 use PZBot\Server\Status;
 
@@ -9,7 +8,7 @@ $serverIsActive = fn() => shell_exec('grep "Chat server successfully initialized
 
 if ($serverIsUp()) {
 
-  if ($serverIsActive) {
+  if ($serverIsActive()) {
     ServerStatus::updateStatus(Status::ACTIVE);
   } else {
     if (!ServerStatus::isRestarted()) {

@@ -74,5 +74,7 @@ class Manager
     if ($status === null or $status === false) {
       throw new UnknownServerManagerError("Failed to restart server");
     }
+
+    ServerStatus::updateStatus(Status::RESTART);
   }
 }
