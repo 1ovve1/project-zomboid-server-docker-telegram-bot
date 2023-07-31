@@ -3,5 +3,5 @@ namespace PZBot\Events;
 
 interface HandlerInterface
 {
-  public function __invoke(mixed ...$params): mixed;
+  public function __invoke(mixed ...$params): void;
 }
