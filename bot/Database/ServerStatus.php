@@ -2,35 +2,33 @@
 
 namespace PZBot\Database;
 
-use PZBot\Server\Status;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\TelegramLog;
-use QueryBox\Migration\MigrateAble;
-use QueryBox\QueryBuilder\QueryBuilder;
+use PZBot\Server\StatusEnum;
 
-class ServerStatus extends QueryBuilder implements MigrateAble
+class ServerStatus
 {
-  private static ?Status $lastStatus = null;
+  private static ?StatusEnum $lastStatus = null;
 
-  public static function getLastStatus(): Status 
+  public static function getLastStatus(): StatusEnum
   {
     if (self::$lastStatus === null) {
-      self::setLastStatus(self::getStatus());
+      self::$lastStatus = StatusEnum::UNDEFINED;
     }
 
     return self::$lastStatus;
   }
 
-  protected static function setLastStatus(Status $status): void
+  protected static function setLastStatus(StatusEnum $status): void
   {
     self::$lastStatus = $status;
   }
 
   /**
-   * @param Status $status
+   * @param StatusEnum $status
    * @return void
    */
-  public static function updateStatus(Status $status): void
+  public static function updateStatus(StatusEnum $status): void
   {
 
     if (self::getLastStatus() !== $status) {
@@ -47,31 +45,8 @@ class ServerStatus extends QueryBuilder implements MigrateAble
         ]
       );
   
-      ServerStatus::insert([
-        "status" => $status->value
-      ])->save();
-
       self::setLastStatus($status);
     }
-  }
-
-  public static function getStatus(): Status
-  {
-    $queryResult = ServerStatus::select(["status"])->orderBy(["id"], false)->limit(1)->save();
-
-    if ($queryResult->isNotEmpty()) {
-      [["status" => $status]] = $queryResult->fetchAll();
-
-      $statusEnum = Status::tryFrom($status);
-
-      if ($statusEnum !== null) {
-
-        return $statusEnum;
-      }
-
-    }
-
-    return Status::UNDEFINED;
   }
 
   /**
@@ -79,7 +54,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isRestarted(): bool
   {
-      return ServerStatus::getLastStatus() === Status::RESTART;
+      return ServerStatus::getLastStatus() === StatusEnum::RESTART;
   }
 
   /**
@@ -87,7 +62,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isPending(): bool
   {
-      return ServerStatus::getLastStatus() === Status::PENDING;
+      return ServerStatus::getLastStatus() === StatusEnum::PENDING;
   }
 
   /**
@@ -95,7 +70,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isDown(): bool
   {
-      return ServerStatus::getLastStatus() === Status::DOWN;
+      return ServerStatus::getLastStatus() === StatusEnum::DOWN;
   }
 
   /**
@@ -103,7 +78,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isActive(): bool
   {
-      return ServerStatus::getLastStatus() === Status::ACTIVE;
+      return ServerStatus::getLastStatus() === StatusEnum::ACTIVE;
   }
 
   /**
@@ -111,18 +86,7 @@ class ServerStatus extends QueryBuilder implements MigrateAble
    */
   public static function isUndefined(): bool
   {
-      return ServerStatus::getLastStatus() === Status::UNDEFINED;
+      return ServerStatus::getLastStatus() === StatusEnum::UNDEFINED;
   }
 
-
-  public static function migrationParams(): array
-  {
-    return [
-      "fields" => [
-        "id" => "BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT",
-        "date" => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
-        "status" => "CHAR(10) NOT NULL",
-      ]
-    ];
-  }
 }
