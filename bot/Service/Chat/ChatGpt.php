@@ -18,13 +18,15 @@ class ChatGpt
 
   function answer(int $userId, string $question): CreateResponseChoice
   {
+    ChatGptDialog::addMessageUser($userId, $question);
+
     $messageHistory = ChatGptDialog::collectMessageHistoryFromUserId($userId);
 
     $response = $this->createRequest($messageHistory, $question);
 
     $choice = $response->choices[0];
 
-    ChatGptDialog::addMessage($userId, $question, $choice);
+    ChatGptDialog::addMessageBot($userId, $choice);
 
     return $choice;
   }

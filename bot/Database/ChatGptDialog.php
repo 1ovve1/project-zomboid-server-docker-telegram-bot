@@ -7,7 +7,8 @@ use QueryBox\QueryBuilder\QueryBuilder;
 
 class ChatGptDialog extends QueryBuilder implements MigrateAble
 {
-  const TOKEN_LENGTH = 4000;
+  const DEFAULT_TOKEN_SIZE = 4097;
+  
   static function collectMessageHistoryFromUserId(int $userId, int $limit = 20): array
   {
     $queryBox = ChatGptDialog::select(["role", "content"])
@@ -25,27 +26,31 @@ class ChatGptDialog extends QueryBuilder implements MigrateAble
       ''
     );
     
-    if (strlen($totalMessagesString) >= self::TOKEN_LENGTH) {
+    if (strlen($totalMessagesString) >= $_ENV["BOT_CHATGPT_TOKEN_LENGTH"] ?? self::DEFAULT_TOKEN_SIZE) {
       return self::collectMessageHistoryFromUserId($userId, $limit - 1);
     }
 
     return array_reverse($messageHistory);
   }
 
-  static function addMessage(int $userId, string $userQuestion, CreateResponseChoice $botAnswer): void
+  static function addMessageUser(int $userId, $content): void
+  {
+    self::addMessage($userId, "user", $content);
+  }
+
+  static function addMessageBot(int $userId, CreateResponseChoice $choice): void
+  {
+    $botMessage = $choice->message;
+
+    self::addMessage($userId, $botMessage->role, $botMessage->content);
+  }
+
+  static function addMessage(int $userId, string $role, string $content): void
   {
     ChatGptDialog::insert([
       "user_id" => $userId,
-      "role" => "user",
-      "content" => $userQuestion
-    ])->save();
-
-    $botMessage = $botAnswer->message;
-
-    ChatGptDialog::insert([
-      "user_id" => $userId,
-      "role" => $botMessage->role,
-      "content" => $botMessage->content
+      "role" => $role,
+      "content" => $content
     ])->save();
   }
 

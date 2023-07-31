@@ -9,8 +9,6 @@ use PZBot\Service\Chat\ChatGpt;
 
 class AskCommand extends AbstractCommand
 {
-  const MAX_MESSAGE_SIZE = 97;
-
   /**
    * @var string
    */
@@ -58,8 +56,9 @@ class AskCommand extends AbstractCommand
   {
     $question = $this->getMessageText();
 
-    if (strlen($question) >= self::MAX_MESSAGE_SIZE) {
-      return $this->replyToChat("Too many symbols! Please use less than " . self::MAX_MESSAGE_SIZE . " chars in your message.");
+    $limit = $this->appConfig->get("BOT_CHATGPT_USER_MSG_LENGTH", 500);
+    if (strlen($question) >= $limit) {
+      return $this->replyToChat("Too many symbols! Please use less than {$limit} chars in your message.");
     }
 
     $choice = $this->chatGpt->answer($this->user->getId(), $question);
