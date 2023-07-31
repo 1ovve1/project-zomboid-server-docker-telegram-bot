@@ -26,6 +26,7 @@ $dotenv->load();
  * Additional config params
  */
 $_ENV["BOT_ADMIN_IDS"] = explode(',', $_ENV["BOT_ADMIN_IDS"]);
+$_ENV["BOT_COMMANDS_PATH"] = BASE_DIR . '/' . $_ENV["BOT_COMMANDS_PATH"];
 
 /**
  * Initialize logger instance

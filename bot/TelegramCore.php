@@ -13,7 +13,7 @@ class TelegramCore extends Telegram implements TelegramCoreInterface
 
     $botApiKey = $config->get("BOT_API_KEY");
     $botUsername = $config->get("BOT_USERNAME");
-    $commandsPath = $config->get("BOT_COMMANDS_PATH", "bot/CustomCommads");
+    $commandsPath = $config->get("BOT_COMMANDS_PATH", __DIR__ . "/CustomCommads");
     $useDb = $config->get("USE_DB", false);
     $dbConn = [
       'host'     => $config->get("DB_HOST"),
@@ -22,7 +22,7 @@ class TelegramCore extends Telegram implements TelegramCoreInterface
       'database' => $config->get("DB_NAME"),
     ];
 
-    $this->addCommandsPaths([BASE_DIR . $commandsPath]);
+    $this->addCommandsPaths([$commandsPath]);
 
     if ($useDb) {
       $this->enableMySql($dbConn);
