@@ -7,6 +7,7 @@ use QueryBox\QueryBuilder\QueryBuilder;
 
 class ChatGptDialog extends QueryBuilder implements MigrateAble
 {
+  const TOKEN_LENGTH = 4000;
   static function collectMessageHistoryFromUserId(int $userId, int $limit = 20): array
   {
     $queryBox = ChatGptDialog::select(["role", "content"])
@@ -16,6 +17,17 @@ class ChatGptDialog extends QueryBuilder implements MigrateAble
       ->save();
 
     $messageHistory = $queryBox->fetchAll();
+      
+    // TODO: this is really huge overhead i think
+    $totalMessagesString = array_reduce(
+      $messageHistory,
+      fn($acc, $x) => $acc .= $x["content"],
+      ''
+    );
+    
+    if (strlen($totalMessagesString) >= self::TOKEN_LENGTH) {
+      return self::collectMessageHistoryFromUserId($userId, $limit - 1);
+    }
 
     return array_reverse($messageHistory);
   }
