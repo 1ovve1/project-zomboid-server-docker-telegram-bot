@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace PZBot\Exceptions\Checked;
+namespace PZBot\Exceptions;
 
 use Exception;
 

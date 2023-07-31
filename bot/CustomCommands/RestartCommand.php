@@ -4,11 +4,8 @@ namespace PZBot\CustomCommands;
 
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\TelegramLog;
 use PZBot\Commands\AdminCommand;
-use PZBot\Exceptions\Checked\CheckedException;
-use PZBot\Exceptions\ServerManageException;
-use PZBot\Server\Manager;
+use PZBot\Exceptions\CheckedException;
 
 class RestartCommand extends AdminCommand
 {
@@ -46,7 +43,7 @@ class RestartCommand extends AdminCommand
     public function execute(): ServerResponse
     {
         try {
-            Manager::restart();
+            $this->getManager()->restart();
         } catch (CheckedException $e) {
             return $this->replyToChat($e->getMessage());    
         }

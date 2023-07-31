@@ -2,79 +2,72 @@
 
 namespace PZBot\Server;
 
-use PZBot\Database\ServerStatus;
-use PZBot\Exceptions\Checked\ServerManageException;
+use Longman\TelegramBot\TelegramLog;
+use PZBot\Server\Commands\CommandListEnum;
+use PZBot\Exceptions\Checked\ExecutorCommandException;
 use PZBot\Exceptions\Checked\UnknownServerManagerError;
+use PZBot\Server\Commands\ExecutorInterface;
 
-class Manager 
+class Manager implements ManagerInterface
 {
-  const CMD_SHUTDOWN = "sudo docker-compose down && echo 1";
-  const CMD_UP = "rm ./data/Logs/*.txt && sudo docker-compose up -d && echo 1";
-  const CMD_RESTART = "sudo docker-compose down && rm ./data/Logs/*.txt && sudo docker-compose up -d && echo 1";
+  protected ?ExecutorInterface $executor;
 
-  /**
-   * Shutdown server
-   *
-   * @return void
-   * @throws ServerManageException
-   * @throws UnknownServerManagerError
-   */
-  public static function down() 
+  function __construct(?ExecutorInterface $executor = null)
   {
-    if (ServerStatus::isDown()) {
-      throw new ServerManageException("Server already shutdown");
+    $this->executor = $executor;
+  }
+  
+  /**
+   * @inheritDoc
+   */
+  public function down(): void
+  {
+    try {
+      $this->executor->execute(CommandListEnum::SERVER_DOWN);
+    } catch (ExecutorCommandException $e) {
+      throw new UnknownServerManagerError("Failed to shutdown server", $e);
     }
-
-    $status = shell_exec(self::CMD_SHUTDOWN);
-
-    if ($status === null or $status === false) {
-      throw new UnknownServerManagerError("Failed to shutdown server");
-    }
-
-    ServerStatus::updateStatus(Status::DOWN);
   }
 
   /**
-   * Up server
-   *
-   * @return void
-   * @throws ServerManageException
-   * @throws UnknownServerManagerError
+   * @inheritDoc
    */
-  public static function up(): void 
+  public function up(): void 
   {
-    if (ServerStatus::isPending() || ServerStatus::isActive()) {
-      throw new ServerManageException("Server already up. Please wait!");
+    $this->deleteLogs();
+
+    try {
+      $this->executor->execute(CommandListEnum::SERVER_UP);
+    } catch (ExecutorCommandException $e) {
+      throw new UnknownServerManagerError("Failed to up server, $e");
     }
-
-    $status = shell_exec(self::CMD_UP);
-
-    if ($status === null or $status === false) {
-      throw new UnknownServerManagerError("Failed to up server");
-    }
-
-    ServerStatus::updateStatus(Status::PENDING);
   }
 
   /**
-   * Restart server
-   *
-   * @return void
-   * @throws ServerManageException
-   * @throws UnknownServerManagerError
+   * @inheritDoc
    */
-  public static function restart(): void 
+  public function restart(): void 
   {
-    if (ServerStatus::isRestarted()) {
-      throw new ServerManageException("Server already restarted");
+    try {
+      $this->down();
+    } catch(ExecutorCommandException $e) {
+      TelegramLog::warning("Failed to down server", [$e]);
+    } finally {
+      $this->up();
     }
+  }
 
-    $status = shell_exec(self::CMD_RESTART);
-
-    if ($status === null or $status === false) {
-      throw new UnknownServerManagerError("Failed to restart server");
+  /**
+   * Wrapper for delete logs command
+   * 
+   * @return void
+   */
+  public function deleteLogs(): void
+  {
+    try {
+      $this->executor->execute(CommandListEnum::GAME_LOGS_DELETE);
+    } catch(ExecutorCommandException $e) {
+      TelegramLog::warning("Delete logs operation failed", [$e]);
     }
-
-    ServerStatus::updateStatus(Status::RESTART);
   }
 }

@@ -3,7 +3,7 @@
 namespace PZBot\Server;
 
 
-enum Status: string
+enum StatusEnum: string
 {
   case ACTIVE = "ACTIVE";
   case RESTART = "RESTART";

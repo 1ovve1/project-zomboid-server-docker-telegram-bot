@@ -4,11 +4,8 @@ namespace PZBot\CustomCommands;
 
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\TelegramLog;
 use PZBot\Commands\AdminCommand;
-use PZBot\Database\User;
-use PZBot\Exceptions\Checked\CheckedException;
-use PZBot\Server\Manager;
+use PZBot\Exceptions\CheckedException;
 
 class UpCommand extends AdminCommand
 {
@@ -46,7 +43,7 @@ class UpCommand extends AdminCommand
     public function execute(): ServerResponse
     {
         try {
-            Manager::up();
+            $this->getManager()->up();
         } catch (CheckedException $e) {
             return $this->replyToChat($e->getMessage());    
         }

@@ -4,6 +4,7 @@
 namespace PZBot\Exceptions\Checked;
 
 use Longman\TelegramBot\TelegramLog;
+use PZBot\Exceptions\CheckedException;
 
 class ServerManageException extends CheckedException
 {

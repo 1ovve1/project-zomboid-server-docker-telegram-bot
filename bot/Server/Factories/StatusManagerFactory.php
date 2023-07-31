@@ -1,0 +1,28 @@
+<?php declare(strict_types=1);
+
+namespace PZBot\Server\Factories;
+use PZBot\Server\Commands\Factories\ExecutorFactoryInterface;
+use PZBot\Server\Manager;
+use PZBot\Server\ManagerInterface;
+use PZBot\Server\StatusManagerDecorator;
+
+class StatusManagerFactory implements ManagerFactoryInterface
+{
+  protected ExecutorFactoryInterface $executorFactory;
+
+  function __construct(ExecutorFactoryInterface $executorFactory) 
+  {
+    $this->executorFactory = $executorFactory;
+  }
+
+  function getManager(): ManagerInterface
+  {
+    $executor = $this->executorFactory->getExecutor();
+
+    return new StatusManagerDecorator(
+      new Manager(
+        $executor
+      )
+    );
+  }
+}
