@@ -2,12 +2,12 @@
 
 namespace PZBot\CustomCommands;
 
-use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
+use PZBot\Commands\AbstractCommand;
 use PZBot\Database\ServerStatus;
 
-class StatusCommand extends SystemCommand
+class StatusCommand extends AbstractCommand
 {
     /**
      * @var string

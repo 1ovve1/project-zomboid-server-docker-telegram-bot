@@ -1,11 +1,13 @@
 <?php declare(strict_types=1);
 
+
 use Longman\TelegramBot\TelegramLog;
 use QueryBox\DBFacade;
 use QueryBox\Migration\Container\QueryObject;
 use QueryBox\Migration\MetaTable;
+use PZBot\Database\ChatGptDialog;
 
-require __DIR__ . "/bot/bootstrap.php";
+require __DIR__ . "/bootstrap.php";
 
 TelegramLog::info("Migrate bot tables");
 
@@ -27,11 +29,16 @@ try {
 TelegramLog::info("DONE!");
 
 TelegramLog::info("Triyng to migrate other meta tables...");
+
+$tables = [
+  ChatGptDialog::class
+];
+
 try {
   $migrationTool = MetaTable::createImmutable(DBFacade::getDBInstance());
 
-  foreach ($_ENV["CONFIG"]["tables"] as $table) {
-    TelegramLog::info("Migrate table '{$table}' ...");
+  foreach ($tables as $table) {
+    TelegramLog::info("Migrate table '{$table::table()}' ...");
     $migrationTool->doMigrateFromMigrateAble($table);
     TelegramLog::info("DONE!");
   }

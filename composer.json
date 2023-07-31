@@ -29,7 +29,8 @@
     "require": {
         "longman/telegram-bot": "*",
         "vlucas/phpdotenv": "^5.5",
-        "1owe1/query-box": "^1.0"
+        "1owe1/query-box": "^1.0",
+        "openai-php/client": "^0.6.4"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.2",
@@ -40,5 +41,10 @@
         "check-code": [
             "\"vendor/bin/phpcs\""
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }
