@@ -12,4 +12,11 @@ interface ExecutorFactoryInterface
    * @return ExecutorInterface
    */
   function getExecutor(): ExecutorInterface;
+
+  /**
+   * Return bash executor with unsafe flag
+   *
+   * @return ExecutorInterface
+   */
+  function getExecutorUnsafe(): ExecutorInterface;
 }

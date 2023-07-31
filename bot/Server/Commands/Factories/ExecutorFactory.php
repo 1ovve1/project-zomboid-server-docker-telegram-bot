@@ -22,4 +22,12 @@ class ExecutorFactory implements ExecutorFactoryInterface
   {
     return new Executor($this->resolver);
   }
+
+  /**
+   * @inheritDoc
+   */
+  function getExecutorUnsafe(): ExecutorInterface
+  {
+    return new Executor($this->resolver, false);
+  }
 }

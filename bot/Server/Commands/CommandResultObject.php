@@ -8,7 +8,11 @@ class CommandResultObject
 
   function __construct(CommandLIstEnum $commandSource, string|false|null $result)
   {
-    $this->bashResult = $result;    
+    if (is_string($result)) {
+      $result = trim($result);
+    }
+    
+    $this->bashResult = $result;
   }
 
   function getRawResult(): string|false|null

@@ -13,12 +13,23 @@ use PZBot\Server\Commands\CommandResultObject;
 class Executor implements ExecutorInterface
 {
   protected CommandResolverInterface $resolver;
+  protected bool $safeMod;
 
-  function __construct(CommandResolverInterface $resolver)
+  /**
+   * @param CommandResolverInterface $resolver
+   * @param boolean $safeMod - throws ExecutorCommandException if command fails and $safeMod === true
+   */
+  function __construct(CommandResolverInterface $resolver, bool $safeMod = true)
   {
     $this->resolver = $resolver;
+    $this->safeMod = $safeMod;
   }
 
+  /**
+   * @param CommandListEnum ...$commands
+   * @return CommandResultObject
+   * @throws ExecutorCommandException - if safeMod === true and command fails
+   */
   function execute(CommandListEnum ...$commands): CommandResultObject
   {
     foreach ($commands as $command) {
@@ -31,7 +42,7 @@ class Executor implements ExecutorInterface
         shell_exec($commandResolve)
       );
 
-      if ($commandResult->isBad()) {
+      if ($this->safeMod && $commandResult->isBad()) {
         throw new ExecutorCommandException($command, $commandResolve, $commandResult);
       }
     }
