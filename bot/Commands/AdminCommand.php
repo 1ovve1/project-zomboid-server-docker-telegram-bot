@@ -15,7 +15,7 @@ use PZBot\Server\Commands\Bash\BashCommandResolver;
 use PZBot\Server\Commands\Factories\ExecutorFactory;
 use PZBot\Server\Factories\ManagerFactoryInterface;
 use PZBot\Server\Factories\StatusManagerFactory;
-use PZBot\Server\Manager;
+use PZBot\Server\ManagerInterface;
 
 abstract class AdminCommand extends SystemCommand
 {
@@ -51,7 +51,7 @@ abstract class AdminCommand extends SystemCommand
         return parent::preExecute();
     }
 
-    function getManager(): Manager
+    function getManager(): ManagerInterface
     {
         return $this->managerFactory->getManager();
     }
