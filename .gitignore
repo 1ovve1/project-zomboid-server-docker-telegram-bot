@@ -6,3 +6,5 @@ workshop-mods/*
 .env
 /vendor
 /composer.lock
+/.phpunit.cache
+/.vscode
