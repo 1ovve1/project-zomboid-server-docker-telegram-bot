@@ -19,7 +19,7 @@ class ServerStatusHandler implements HandlerInterface
 
   public function __invoke(mixed...$params): void
   {
-    $executor = $this->executorFactory->getExecutor();
+    $executor = $this->executorFactory->getExecutorUnsafe();
 
 
     if ($executor->execute(CommandListEnum::SERVER_STATUS)->isOK()) {
