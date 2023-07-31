@@ -27,6 +27,7 @@ $dotenv->load();
  */
 $_ENV["BOT_ADMIN_IDS"] = explode(',', $_ENV["BOT_ADMIN_IDS"]);
 $_ENV["BOT_COMMANDS_PATH"] = BASE_DIR . '/' . $_ENV["BOT_COMMANDS_PATH"];
+$_ENV["BOT_LOG_PATH"] = BASE_DIR . '/' . $_ENV["BOT_LOG_PATH"];
 
 /**
  * Initialize logger instance
@@ -37,11 +38,10 @@ $logLevel = match($_ENV["BOT_LOG_LEVEL"] ?? null) {
   "warning" => Level::Warning, 
   default => Level::Info,
 };
-$logPath = BASE_DIR . $_ENV["BOT_LOG_PATH"] . "/pzbot.log";
 
 TelegramLog::initialize(
   new Logger("pzbot", [
-    (new RotatingFileHandler($logPath, 5, $logLevel))
+    (new RotatingFileHandler($_ENV["BOT_LOG_PATH"], 5, $logLevel))
       ->setFormatter(new LineFormatter(null, null, false, true)),
       
     (new StreamHandler('php://stdout', $logLevel))
