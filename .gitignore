@@ -1,9 +1,11 @@
 # pz server files
 data/*
-!data/.gitkeep
+!data/.gitignore
 workshop-mods/*
 !workshop-mods/.gitkeep
 .env
+
+# BOT files
 /vendor
 /composer.lock
 /.phpunit.cache
