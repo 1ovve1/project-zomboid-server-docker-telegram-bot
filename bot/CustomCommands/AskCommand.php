@@ -5,7 +5,7 @@ namespace PZBot\CustomCommands;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use PZBot\Commands\AbstractCommand;
-use PZBot\Service\Chat\ChatGpt;
+use PZBot\Service\OpenAI\ChatGpt;
 use Throwable;
 
 class AskCommand extends AbstractCommand
@@ -42,9 +42,7 @@ class AskCommand extends AbstractCommand
 
   function createHook(): void
   {
-      $this->chatGpt = new ChatGpt(
-        $this->appConfig->get("BOT_CHATGPT_KEY")
-      );
+      $this->chatGpt = ChatGpt::fromEnv($this->appConfig);
   }
 
   /**
