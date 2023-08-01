@@ -6,6 +6,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use PZBot\Commands\AbstractCommand;
 use PZBot\Service\Chat\ChatGpt;
+use Throwable;
 
 class AskCommand extends AbstractCommand
 {
@@ -61,7 +62,11 @@ class AskCommand extends AbstractCommand
       return $this->replyToChat("Too many symbols! Please use less than {$limit} chars in your message.");
     }
 
-    $choice = $this->chatGpt->answer($this->user->getId(), $question);
+    try {
+      $choice = $this->chatGpt->answer($this->user->getId(), $question);
+    } catch (Throwable $e) {
+      return $this->replyToChat($e->getMessage(), ["reply_to_message_id" => $this->message->getMessageId()]);
+    }
 
     return $this->replyToChat($choice->message->content, ["reply_to_message_id" => $this->message->getMessageId()]);
   }

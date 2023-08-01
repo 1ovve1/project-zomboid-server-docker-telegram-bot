@@ -7,6 +7,7 @@ use PZBot\Events\Emmiter;
 use PZBot\Events\EmmiterFactoryInterface;
 use PZBot\Events\EventsCollection;
 use PZBot\Events\EventsEnum;
+use Throwable;
 
 class App
 {
@@ -30,13 +31,17 @@ class App
     while(true) {
       $this->emmiter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES);
 
-      $response = $this->handleUpdates();
-
-      $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_UPDATES);
-
-      $this->handleResponse($response);
-
-      $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_RESPONSE);
+      try {
+        $response = $this->handleUpdates();
+  
+        $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_UPDATES);
+  
+        $this->handleResponse($response);
+  
+        $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_RESPONSE);
+      } catch (Throwable $e) {
+        TelegramLog::error($e->getMessage(), [$e]);
+      }
 
       sleep($sleep);
     }
