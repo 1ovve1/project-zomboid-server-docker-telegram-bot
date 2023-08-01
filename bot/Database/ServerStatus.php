@@ -4,6 +4,7 @@ namespace PZBot\Database;
 
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\TelegramLog;
+use PZBot\Helpers\TelegramRequestHelper;
 use PZBot\Server\StatusEnum;
 
 class ServerStatus
@@ -33,18 +34,9 @@ class ServerStatus
 
     if (self::getLastStatus() !== $status) {
       TelegramLog::warning("Server status update on '{$status->value}'");
-  
-      Request::sendToActiveChats(
-        'sendMessage',
-        ["text" => "Server status update... {$status->withSmile()}"],
-        [
-          'groups'      => true,
-          'supergroups' => true,
-          'channels'    => false,
-          'users'       => false,
-        ]
-      );
-  
+      
+      TelegramRequestHelper::sendMessageToAllGroups("Server status update... {$status->withSmile()}");
+
       self::setLastStatus($status);
     }
   }
