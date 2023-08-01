@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
 namespace PZBot\Events;
+use PZBot\Env;
+use PZBot\Events\Handlers\ChatGptTsundereMessageHandler;
 use PZBot\Events\Handlers\ServerStatusHandler;
 use PZBot\Server\Commands\Bash\BashCommandResolver;
 use PZBot\Server\Commands\Factories\ExecutorFactory;
@@ -17,6 +19,13 @@ class EmmiterFactory implements EmmiterFactoryInterface
         new ExecutorFactory(
           new BashCommandResolver(false)
         )
+      )
+    );
+
+    $eventsCollection->addEventListener(
+      EventsEnum::SHEDULER,
+      new ChatGptTsundereMessageHandler(
+        new Env
       )
     );
 

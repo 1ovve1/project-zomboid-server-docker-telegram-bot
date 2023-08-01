@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
 namespace PZBot;
+use DateTime;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\TelegramLog;
 use PZBot\Events\Emmiter;
 use PZBot\Events\EmmiterFactoryInterface;
-use PZBot\Events\EventsCollection;
 use PZBot\Events\EventsEnum;
 use Throwable;
 
@@ -29,22 +29,33 @@ class App
   public function cron(int $sleep = 1): never
   {
     while(true) {
-      $this->emmiter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES);
-
       try {
-        $response = $this->handleUpdates();
-  
-        $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_UPDATES);
-  
-        $this->handleResponse($response);
-  
-        $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_RESPONSE);
+        $this->telegramUpdateCycle();
+
+        $this->shedulerTasks();
       } catch (Throwable $e) {
         TelegramLog::error($e->getMessage(), [$e]);
       }
 
       sleep($sleep);
     }
+  }
+
+  /**
+   * @return void
+   * @throws Throwable
+   */
+  private function telegramUpdateCycle(): void
+  {
+    $this->emmiter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES);
+
+    $response = $this->handleUpdates();
+  
+    $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_UPDATES);
+
+    $this->handleResponse($response);
+
+    $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_RESPONSE);
   }
 
   /**
@@ -69,15 +80,20 @@ class App
     }
   }
 
-  /**
-   * Add events
-   *
-   * @param EventsCollection $events
-   * @return void
-   */
-  function useEvents(EventsCollection $events): void
+  private function shedulerTasks(): void
   {
-    $this->emmiter->useCollection($events);
+    $this->emmiter->emmit(
+      EventsEnum::SHEDULER, 
+      [
+        "message" => "с добрым утром",
+        "time" => (new DateTime())->setTime(09, 00),
+      ],
+      [
+        "message" => "доброй ночи",
+        "time" => (new DateTime())->setTime(23, 00),
+      ]
+    );
+
   }
 
 }
