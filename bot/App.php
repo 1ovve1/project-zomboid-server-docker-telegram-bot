@@ -86,11 +86,11 @@ class App
       EventsEnum::SHEDULER, 
       [
         "message" => "с добрым утром",
-        "time" => (new DateTime())->setTime(09, 00),
+        "time" => (new DateTime())->setTime(9, 0),
       ],
       [
         "message" => "доброй ночи",
-        "time" => (new DateTime())->setTime(23, 00),
+        "time" => (new DateTime())->setTime(23, 0),
       ]
     );
 
