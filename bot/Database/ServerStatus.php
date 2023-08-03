@@ -14,7 +14,7 @@ class ServerStatus
   public static function getLastStatus(): StatusEnum
   {
     if (self::$lastStatus === null) {
-      self::$lastStatus = StatusEnum::UNDEFINED;
+      self::$lastStatus = StatusEnum::ACTIVE;
     }
 
     return self::$lastStatus;
