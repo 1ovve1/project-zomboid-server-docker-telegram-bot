@@ -60,8 +60,9 @@ class ChatGptTsundereMessageHandler implements HandlerInterface
   private function isTime(DateTime $compare): bool
   {
     $now = $this->now();
+    $format = "Hi";
 
-    return $now->format("hi") === $compare->format(("hi"));
+    return $now->format($format) === $compare->format(($format));
   }
 
   private function isTaskReady(int $taskIndex): bool
