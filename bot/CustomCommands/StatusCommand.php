@@ -86,8 +86,6 @@ class StatusCommand extends AbstractCommand
         foreach ($lastPzUsersActivities as $activity) {
             $daysAgo = (new DateTime())->diff($activity->activityTime)->d;
 
-            var_dump($activity->activityTime);
-
             if ($daysAgo < 7) {
                 $players .= sprintf(
                     "\t%d) %s\n", 
