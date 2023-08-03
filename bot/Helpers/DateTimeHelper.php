@@ -18,13 +18,13 @@ class DateTimeHelper
   {
     if ($dateInterval->d > 0) {
       return sprintf(
-        "%d days %d:%d:%d",
-        $dateInterval->d, $dateInterval->h, $dateInterval->i, $dateInterval->s
+        "%d days %s",
+        $dateInterval->d, $dateInterval->format('H:i:s')
       );
     } else {
       return sprintf(
-        "%s:%s:%s",
-        $dateInterval->h, $dateInterval->i, $dateInterval->s
+        "%s",
+        $dateInterval->format('H:i:s')
       );
     }
   }
