@@ -17,7 +17,7 @@ class DateTimeHelper
       );
     } else {
       return sprintf(
-        "%d:%d:%d",
+        "%s:%s:%s",
         $interval->h, $interval->i, $interval->s
       );
     }

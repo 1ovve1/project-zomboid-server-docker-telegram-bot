@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace PZBot\Service\LogsParser\DTO;
+use DateInterval;
 use DateTime;
 use PZBot\Service\LogsParser\UserStatusEnum;
 
@@ -31,7 +32,7 @@ class UserActivityObject implements UniqueDTOInterface
       (int)$params["id"],
       $params["name"],
       UserStatusEnum::find($params["action"]),
-      DateTime::createFromFormat('d-m-y H:i:s.v', $params["time"]),
+      DateTime::createFromFormat('d-m-y H:i:s.v', $params["time"])->sub(new DateInterval("PT3H")), // TODO: pz use default timezone need to solve it in better way
     );
   }
 

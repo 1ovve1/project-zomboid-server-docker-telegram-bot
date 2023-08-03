@@ -82,16 +82,16 @@ class StatusCommand extends AbstractCommand
             return '';
         }
 
+        $count = 0;
         foreach ($lastPzUsersActivities as $activity) {
             $daysAgo = (new DateTime())->diff($activity->activityTime)->d;
 
             var_dump($activity->activityTime);
 
             if ($daysAgo < 7) {
-                static $count = 1;
                 $players .= sprintf(
                     "\t%d) %s\n", 
-                    $count++, 
+                    ++$count, 
                     $activity->toString()
                 );
             }
