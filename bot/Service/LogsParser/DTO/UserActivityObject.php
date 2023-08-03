@@ -32,7 +32,7 @@ class UserActivityObject implements UniqueDTOInterface
       (int)$params["id"],
       $params["name"],
       UserStatusEnum::find($params["action"]),
-      DateTime::createFromFormat('d-m-y H:i:s.v', $params["time"])->sub(new DateInterval("PT3H")), // TODO: pz use default timezone need to solve it in better way
+      DateTime::createFromFormat('d-m-y H:i:s.v', $params["time"])->add(new DateInterval("PT3H")), // TODO: pz use default timezone need to solve it in better way
     );
   }
 
