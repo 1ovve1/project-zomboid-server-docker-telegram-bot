@@ -7,18 +7,21 @@ use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Entities\User;
 use Longman\TelegramBot\Telegram;
 use PZBot\Env;
+use PZBot\Service\LogsParser\LogsParserFactory;
 
 abstract class AbstractCommand extends SystemCommand
 {
   protected ?User $user;
   protected Message $message;
   protected Env $appConfig;
+  protected LogsParserFactory $logsParserFactory;
 
   function __construct(Telegram $telegram, ?Update $update = null)
   {
     parent::__construct($telegram, $update);
 
     $this->appConfig = new Env();
+    $this->logsParserFactory = new LogsParserFactory;
   }
   
   public function preExecute(): ServerResponse
