@@ -11,6 +11,11 @@ use Monolog\Level;
 use Monolog\Logger;
 
 /**
+ * Set default timezon
+ */
+date_default_timezone_set('Etc/GMT-3');
+
+/**
  * Global constants
  */
 const BASE_DIR = __DIR__;
