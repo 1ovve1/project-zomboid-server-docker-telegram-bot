@@ -11,14 +11,14 @@ class TelegramRequestHelper
     Request::sendToActiveChats(
       'sendPhoto',
       [
-        "photo" => Request::encodeFile($imagePath),
+        "photo" => $imagePath,
         "caption" => $caption
       ],
       [
         'groups'      => true,
         'supergroups' => true,
         'channels'    => false,
-        'users'       => true,
+        'users'       => false,
       ]
     );
   }
@@ -34,7 +34,7 @@ class TelegramRequestHelper
         'groups'      => true,
         'supergroups' => true,
         'channels'    => false,
-        'users'       => true,
+        'users'       => false,
       ]
     );
   }
