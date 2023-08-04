@@ -41,12 +41,4 @@ enum UserStatusEnum: string
       default => '⚪',
     };
   }
-
-  function resolveTime(\DateTime $time): string
-  {
-    return match($this) {
-
-      default => DateTimeHelper::calculateTimeAfterDate($time),
-    };
-  }
 }
