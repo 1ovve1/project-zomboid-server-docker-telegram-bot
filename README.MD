@@ -1,115 +1,109 @@
-# Project Zomboid dedicated server container
+# Project Zomboid server now in Telegram!
 
-This Dockerfile downloads the Project Zombie dedicated server using SteamCMD. Will allow you to deploy with ease a server in Kubernetes, Docker...
+## Description
 
-The ready to use image is available here:
+When me and my friends was playing in pz with our own dedicited server i discovered that regular server restarts (mods updates or something) become ARE REALLY ANNOYING. My friends dont know how to use hosting, all stuf with deploy and server managing was in my shoulders and in one of the day i tiried of this.
 
-https://hub.docker.com/r/danixu86/project-zomboid-dedicated-server
+So welcome - this is a more human way of PZ server managing!
 
-## Environment variables
+## Prelude
+This project based on: https://github.com/Danixu/project-zomboid-server-docker. Thank you man, this you wrote a really good docker implementation!
 
-This dockerfile converts some env variables to arguments in the server command, allowing to configure it. The image supports the following environment variables:
+## Requirements
 
-`ADMINPASSWORD:` Sets or changes the admin password. Is mandatory at first startup or will fail. I recommend to remove it once the server is started because the server logs every argument in clear text (if doesn't cares, you can leave it).
+First of all you need host machine with installed docker, docker-compose, mysql 8, php-cli (8.1+) with PDO extension and composer. Yeah, looks huge, maybe in someday i modify Danixu docker implementation with out-the-box support of php and mysql, but now i think this is not a big deal: many of nowedays VPS has all of that inside.
 
-`PASSWORD:` Sets or changes server password. Is optional.
+## Configuration
 
-`CACHEDIR:` Set the folder where the data will be stored. By default the server stores the data in the Zomboid folder in home directory (/home/steam/Zomboid). Is recommended to store this data into a persistent volume to keep the server state.
+You should use .env.template file like this:
 
-`DEBUG:` Enable the debug mode in server
+```bash
+cp .env.tamplate .env
+```
 
-`FORCEUPDATE:` Force a server update on every start. This process can be slow if the image is old.
+And put in there some of the params, take a look for some of them.
 
-`IP:` Set the interface IP where the server will listen. By default all the interfaces.
+### Requierd
 
-`MEMORY:` Amount of memory to use in the server JVM (units can be used, for example 2048m). By default 8096m.
+This is params for base-bot-usage (commands /up, /down, /restart and /status):
 
-`MODFOLDERS`: Mod folders to use to load the game mods. Allowed options are workshop, steam, and mods. Options must be separated by comma, for example: workshop,steam,mods
+```env
+# mysql host and port can be default if 
+# you have default mysql dist
+# other params ARE REQUIRED
+DB_HOST=127.0.0.1   
+DB_PORT=3306
+DB_NAME=pzbot
+DB_USER=pzbot
+DB_PASS=
 
-`NOSTEAM:` Starts the server in NoSteam mode, allowing to non steam users to connect.
+# Telegram bot API key, bot name and
+# admin tg-ids for server managing (via ',')
+# (REQUIRED)
+BOT_API_KEY=
+BOT_USERNAME=
+BOT_ADMIN_IDS=
+```
 
-`PORT:` Set the server port. By default 16261
+Without them bot will be dosen't work!
 
-`SERVERNAME:` Set the server name, which allows you to have multiple server versions. Changing the name will create a new server data, so current progress will not be available. Also will not be lost, just reverting the server name change will load it again.
+### Option params
 
-`SERVERPRESET:` Set the new servers default preset. If not set, the default is apocalypse. Allowed options are Apocalypse, Beginner, Builder, FirstWeek, SixMonthsLater, Survival and Survivor.
+1. ChatGPT integration (this open /ask @message@ command):
 
-`SERVERPRESETREPLACE:` Replace the server preset by the one seted by the SERVERPRESET variable. By default false to avoid to replace custom configurations once the server has started.
+```env
+# CHATGPT OPTION
+BOT_CHATGPT_API_KEY=
+```
 
-`SOFTRESET:` Performs a soft reset in the server. More info in the Soft Reset section.
+2. ChatGPT special group messages (timezone GMT!!! and only russian support):
 
-`STEAMPORT1 & STEAMPORT2:` Sets the two additional ports required for steam to work. I guess that those ports are UDP, but it can be also TCP.
+```env
+# SHEDULER MESSAGES FROM CHATGPT (time based on GMT+0 in H:i format, only russian support)
+BOT_CHATGPT_GOOD_MORNING_TIME='09:00'
+BOT_CHATGPT_GOOD_NIGHT_TIME='23:00'
+```
 
-`STEAMVAC:` Enables or disables de SteamVac protection in server
+3. Media:
 
-`WORKSHOP_IDS:` Semicolon separated list of Workshop IDs to install to the server
+```env
+# MEDIA OPTION
+BOT_UPLOAD_PATH="data/upload"
+BOT_DOWNLOAD_PATH="data/download"
+```
 
-`MOD_IDS:` Semicolon separated list of Mod IDs to install to the server
+Other options im not recomend to change becouse project still in pre-pre-pre-pre-pre alpha-gamma release state.
 
-Mods will install on second server start
-## Soft Reset
+## Installation
 
-Soft reset will perform the following tasks:
+When you add all of steps above you can tap:
 
-* Removes items from the ground.
-* Removes items from containers and replaces them with new loot. This includes player-made containers.
-* Removes corpses and zombified players.
-* Resets zombies.
-* Removes blood splatter.
-* Resets building alarms.
-* Resets the game clock. I’m not positive if this resets to day 1, but the original blog post implies that it does. So this would bring water and electricity back. Assuming your server settings have them * available at day 1.
-* Player-made buildings won’t be deleted.
-* Player inventories won’t reset.
+```bash
+composer install
+```
 
-Removing the following files in the Server data folder (ToDo: I have to search the equivalent files in modern version):
+Run migrations:
 
-* all zombie_X_Y.bin files
-* map_t.bin
-* map_meta.bin
-* reanimated.bin
+```bash
+php bot_intsall.php
+```
 
-Currently is not working correctly and will cause the server to crash when it is active. Also the above points are not performed so nothign will change in the server.
+And run bot app in cron (sudo is required cause for up and down docker commands we need sudo rules, sorry, i promise that im not steel your hosting for criminal interests):
+```bash
+sudo php bot_cron.php
+```
 
-## Required ports
+## Results
 
-The required ports are docummented in the [Official wiki](https://pzwiki.net/wiki/Dedicated_Server#Forwarding_Required_Ports)
+Status command:
 
-For now the ports are the following, but it can change.
+![Status command bot response](./docs/imgs/status_command.png)
 
-### Steam clients ports
+Ask command:
 
-This ports are used by the Steam clients to connect with the server, so it must be opened in firewall and configured in NAT.
+![Ask command bot response](./docs/imgs/ask_command.png)
 
-* 8766 UDP
-* 8767 UDP
-* 16261 UDP (configurable)
+## Credits
 
-### Non Steam clients ports
-
-This ports are used by the No Steam clients to connect with the server, so it must be opened in firewall and configured in NAT.
-
-* 8766 UDP
-* 8767 UDP
-* 16261 UDP (configurable)
-* 16262 - 16272 TCP (range depends of the above port and the clients slots)
-
-### Notes
-
-* The 16261 port can be changed using the PORT environment variable. This will affect at the TCP ports range, changing it to the next port. For example, if PORT is set to 12234, the TCP range will be 12234 - 12244.
-* The TCP ports range is used by the clients, so every client slot will need a port. If your server plans to host 50 clients, then you will need to open 50 ports in firewall/nat... (16262 - 16312).
-* The Wiki says that Non Steam ports is supposed to be for non steam clients, but I am using the steam client and those ports are used too.
-
-## How to use the image
-
-To setup the server you can use the docker-compose program:
-
-* Copy the .env.template to .env and edit it with the settings you want. The only mandatory variable is ADMINPASSWORD and just the first time the server is executed (once is started at least once, it can be removed). The other variables are optional.
-* Run the `docker-compose up -d` command to start the server.
-
-## Scripts folder
-
-In the scripts folders there are three scripts:
-
-* entry.sh: The script used in the image to start the server
-* update_forum.sh: Check the posts in the forum for updates and create a new image if a new version exists. This script was made because looks like the official page doesn't update the version as soon it is out.
-* uodate_web.sh: Check the version in the official page and create a new image if a new version exists
+You can also read original fork readme:
+https://github.com/Danixu/project-zomboid-server-docker
