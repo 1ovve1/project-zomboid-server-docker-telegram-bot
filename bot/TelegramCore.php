@@ -14,7 +14,7 @@ class TelegramCore extends Telegram implements TelegramCoreInterface
     $botApiKey = $config->get("BOT_API_KEY");
     $botUsername = $config->get("BOT_USERNAME");
     $commandsPath = $config->get("BOT_COMMANDS_PATH", __DIR__ . "/CustomCommads");
-    $useDb = $config->get("USE_DB", false);
+    $useDb = $config->get("BOT_USE_DB", false);
     $dbConn = [
       'host'     => $config->get("DB_HOST"),
       'user'     => $config->get("DB_USER"),
@@ -34,5 +34,10 @@ class TelegramCore extends Telegram implements TelegramCoreInterface
       $botApiKey, $botUsername
     );
 
+  }
+
+  public function getConfig(): Env
+  {
+    return $this->config;
   }
 }

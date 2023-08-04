@@ -10,13 +10,26 @@ use PZBot\Server\StatusEnum;
 
 class ServerStatusHandler implements HandlerInterface
 {
+  /**
+   * @var ExecutorFactoryInterface
+   */
   private ExecutorFactoryInterface $executorFactory;
 
+  /**
+   * @param ExecutorFactoryInterface $executorFactory
+   */
   public function __construct(ExecutorFactoryInterface $executorFactory) 
   {
     $this->executorFactory = $executorFactory;
   }
 
+  /**
+   * Dinamicly change status based on log information
+   * TODO: replace Executor usage on special LogsParser service
+   *
+   * @param mixed ...$params
+   * @return void
+   */
   public function __invoke(mixed...$params): void
   {
     $executor = $this->executorFactory->getExecutorUnsafe();

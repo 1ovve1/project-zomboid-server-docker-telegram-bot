@@ -11,9 +11,19 @@ use Throwable;
 
 class App
 {
+  /**
+   * @var TelegramCoreInterface $code
+   */
   readonly TelegramCoreInterface $core;
+  /**
+   * @var Emmiter $emmiter
+   */
   readonly Emmiter $emmiter;
 
+  /**
+   * @param TelegramCoreInterface $core - telegram core
+   * @param EmmiterFactoryInterface $emmiterFactory
+   */
   public function __construct(TelegramCoreInterface $core, EmmiterFactoryInterface $emmiterFactory) 
   {
     $this->core = $core;
@@ -80,17 +90,24 @@ class App
     }
   }
 
+  /**
+   * Task in sheduler mode
+   *
+   * @return void
+   */
   private function shedulerTasks(): void
   {
+    $config = $this->core->getConfig();
+
     $this->emmiter->emmit(
       EventsEnum::SHEDULER, 
       [
         "message" => "с добрым утром",
-        "time" => (new DateTime())->setTime(9, 0),
+        "time" => DateTime::createFromFormat("H:i", $config->get("BOT_CHATGPT_GOOD_MORNING_TIME", false)),
       ],
       [
         "message" => "доброй ночи",
-        "time" => (new DateTime())->setTime(23, 0),
+        "time" => DateTime::createFromFormat("H:i", $config->get("BOT_CHATGPT_GOOD_NIGHT_TIME", false)),
       ]
     );
 
