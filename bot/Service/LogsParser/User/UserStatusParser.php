@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace PZBot\Service\LogsParser;
+namespace PZBot\Service\LogsParser\User;
+use PZBot\Service\LogsParser\AbstractParser;
 use PZBot\Service\LogsParser\DTO\UniqueDTOInterface;
 use PZBot\Service\LogsParser\DTO\UserActivityObject;
 

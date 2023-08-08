@@ -4,8 +4,7 @@ namespace PZBot\Events;
 use PZBot\Env;
 use PZBot\Events\Handlers\ChatGptTsundereMessageHandler;
 use PZBot\Events\Handlers\ServerStatusHandler;
-use PZBot\Server\Commands\Bash\BashCommandResolver;
-use PZBot\Server\Commands\Factories\ExecutorFactory;
+use PZBot\Service\LogsParser\LogsParserFactory;
 
 class EmmiterFactory implements EmmiterFactoryInterface
 {
@@ -16,9 +15,7 @@ class EmmiterFactory implements EmmiterFactoryInterface
     $eventsCollection->addEventListener(
       EventsEnum::AFTER_HANDLE_RESPONSE,
       new ServerStatusHandler(
-        new ExecutorFactory(
-          new BashCommandResolver(false)
-        )
+        new LogsParserFactory
       )
     );
 

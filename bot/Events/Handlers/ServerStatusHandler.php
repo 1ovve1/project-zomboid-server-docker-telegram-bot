@@ -2,25 +2,28 @@
 
 namespace PZBot\Events\Handlers;
 
+use Longman\TelegramBot\TelegramLog;
 use PZBot\Database\ServerStatus;
 use PZBot\Events\HandlerInterface;
-use PZBot\Server\Commands\CommandListEnum;
-use PZBot\Server\Commands\Factories\ExecutorFactoryInterface;
-use PZBot\Server\StatusEnum;
+use PZBot\Exceptions\Checked\LogsFilePremissionDeniedException;
+use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
+use PZBot\Server\ServerStatusEnum;
+use PZBot\Service\LogsParser\LogsParserFactory;
+use PZBot\Service\LogsParser\ParserInterface;
 
 class ServerStatusHandler implements HandlerInterface
 {
   /**
-   * @var ExecutorFactoryInterface
+   * @var ParserInterface
    */
-  private ExecutorFactoryInterface $executorFactory;
+  private LogsParserFactory $logsParserFactory;
 
   /**
-   * @param ExecutorFactoryInterface $executorFactory
+   * @param LogsParserFactory $executorFactory
    */
-  public function __construct(ExecutorFactoryInterface $executorFactory) 
+  public function __construct(LogsParserFactory $logsParserFactory) 
   {
-    $this->executorFactory = $executorFactory;
+    $this->logsParserFactory = $logsParserFactory;
   }
 
   /**
@@ -30,23 +33,25 @@ class ServerStatusHandler implements HandlerInterface
    * @param mixed ...$params
    * @return void
    */
-  public function __invoke(mixed...$params): void
+  public function __invoke(mixed ...$params): void
   {
-    $executor = $this->executorFactory->getExecutorUnsafe();
+    try {
+      $logsParser = $this->logsParserFactory->getServerStartParser();
+      $parseResult = $logsParser->parse();
 
-
-    if ($executor->execute(CommandListEnum::SERVER_STATUS)->isOK()) {
-
-      if ($executor->execute(CommandListEnum::GAME_LOGS_STATUS)->isOK()) {
-        ServerStatus::updateStatus(StatusEnum::ACTIVE);
+      if (count($parseResult) > 0) {
+        $this->cache = true;
+        ServerStatus::updateStatus(ServerStatusEnum::ACTIVE);
       } else {
         if (!ServerStatus::isRestarted()) {
-          ServerStatus::updateStatus(StatusEnum::PENDING);
+          ServerStatus::updateStatus(ServerStatusEnum::PENDING);
         }
       }
-
-    } else {
-      ServerStatus::updateStatus(StatusEnum::DOWN);
+    } catch (LogsFileWasNotFoundedException) {
+      ServerStatus::updateStatus(ServerStatusEnum::DOWN);
+    } catch (LogsFilePremissionDeniedException) {
+      TelegramLog::error("CANNOT UPDATE SERVER STATUS: please run bot with SUDO premissions");
+      ServerStatus::updateStatus(ServerStatusEnum::DOWN);
     }
   }
 }

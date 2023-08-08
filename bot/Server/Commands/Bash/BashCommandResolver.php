@@ -32,9 +32,7 @@ class BashCommandResolver implements CommandResolverInterface
       CommandListEnum::SERVER_DOWN => "docker-compose down",
       CommandListEnum::SERVER_UP => "docker-compose up -d",
       CommandListEnum::SERVER_RESTART => "docker-compose down && docker-compose up -d",
-      CommandListEnum::SERVER_STATUS => "docker container inspect -f '{{.State.Running}}' project-zomboid-server-docker_ProjectZomboidDedicatedServer_1",
-      CommandListEnum::GAME_LOGS_DELETE => "rm ./data/Logs/*.txt",
-      CommandListEnum::GAME_LOGS_STATUS => "grep \"Chat server successfully initialized.\" ./data/Logs/*.txt"
+      CommandListEnum::GAME_LOGS_DELETE => "rm ./data/Logs/*.txt 2> /dev/null",
     };
   }
 

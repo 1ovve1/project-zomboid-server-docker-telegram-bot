@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PZBot\Service\LogsParser;
-use PZBot\Helpers\DateTimeHelper;
+namespace PZBot\Service\LogsParser\User;
 
 enum UserStatusEnum: string
 {

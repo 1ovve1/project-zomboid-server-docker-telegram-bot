@@ -2,7 +2,7 @@
 
 namespace PZBot\Service\LogsParser\DTO;
 use DateTime;
-use PZBot\Service\LogsParser\UserStatusEnum;
+use PZBot\Service\LogsParser\User\UserStatusEnum;
 
 class UserActivityObject implements UniqueDTOInterface
 {
