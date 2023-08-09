@@ -4,9 +4,10 @@
 require_once __DIR__ . '/bootstrap.php';
 
 use PZBot\AppFactory;
+use PZBot\Env;
 
 
-$appFactory = new AppFactory;
+$appFactory = new AppFactory(new Env());
 
 $app = $appFactory->getApp();
 

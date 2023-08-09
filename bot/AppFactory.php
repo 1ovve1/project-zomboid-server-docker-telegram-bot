@@ -5,18 +5,22 @@ use PZBot\Events\EmmiterFactory;
 
 class AppFactory
 {
+  protected Env $config;
+
+  function __construct(Env $config) {
+    $this->config = $config;
+  }
+
   /**
    * Use ENV params for configuration and default emmiter
    *
    * @return App
    */
-  static function getApp(): App
+  function getApp(): App
   {
-    $emmiterFactory = new EmmiterFactory;
-
     return new App(
       new TelegramCore(new Env()),
-      new EmmiterFactory()
+      new EmmiterFactory($this->config)
     );
   }
 }

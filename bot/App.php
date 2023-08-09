@@ -101,14 +101,8 @@ class App
 
     $this->emmiter->emmit(
       EventsEnum::SHEDULER, 
-      [
-        "message" => "с добрым утром",
-        "time" => DateTime::createFromFormat("H:i", $config->get("BOT_CHATGPT_GOOD_MORNING_TIME", false)),
-      ],
-      [
-        "message" => "доброй ночи",
-        "time" => DateTime::createFromFormat("H:i", $config->get("BOT_CHATGPT_GOOD_NIGHT_TIME", false)),
-      ]
+      ['goodMorningMessage' => "доброе утро"],
+      ['goodNightMessage' => "доброй ночи"],
     );
 
   }

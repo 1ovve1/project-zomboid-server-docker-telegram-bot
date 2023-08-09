@@ -6,11 +6,20 @@ use PZBot\Exceptions\Checked\PathWasNotFoundException;
 
 class ImageResolver
 {
-  protected Env $config;
+  protected readonly string $uploadPath;
+  protected readonly string $downloadPath;
 
-  public function __construct(Env $config) 
+  function __construct(string $uploadPath, string $downloadPath) {
+    $this->uploadPath = $uploadPath;
+    $this->downloadPath = $downloadPath;
+  }
+
+  static function fromEnv(Env $config): self
   {
-    $this->config = $config;
+    return new self(
+      $config->get("BOT_UPLOAD_PATH"),
+      $config->get("BOT_DOWNLOAD_PATH"),
+    );
   }
 
   /**
@@ -43,11 +52,11 @@ class ImageResolver
 
   function getUploadPath(): string
   {
-    return $this->config->get("BOT_UPLOAD_PATH");
+    return $this->uploadPath;
   }
 
   function getDownloadPath(): string
   {
-    return $this->config->get("BOT_DOWNLOAD_PATH");
+    return $this->downloadPath;
   }
 }
