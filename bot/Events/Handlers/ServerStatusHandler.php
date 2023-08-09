@@ -40,7 +40,6 @@ class ServerStatusHandler implements HandlerInterface
       $parseResult = $logsParser->parse();
 
       if (count($parseResult) > 0) {
-        $this->cache = true;
         ServerStatus::updateStatus(ServerStatusEnum::ACTIVE);
       } else {
         if (!ServerStatus::isRestarted()) {
