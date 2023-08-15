@@ -25,7 +25,6 @@ class AutoDeleteMessagesMiddleware implements MiddlewareInterface
   function after(ServerResponse $response, Message $message, AbstractCommand $command): ServerResponse
   {
     if ($response->isOk()) {
-      $userId = $message->getFrom()->getId();
       $chatId = $message->getChat()->getId();
       $userMessageId = $message->getMessageId();
       
@@ -33,7 +32,7 @@ class AutoDeleteMessagesMiddleware implements MiddlewareInterface
 
       ChatMessagesHistory::updateMessageHistory(
         $command, 
-        ($chatId < 0) ? $userId: $chatId, 
+        $chatId, 
         $userMessageId, 
         $botMessageId
       );
