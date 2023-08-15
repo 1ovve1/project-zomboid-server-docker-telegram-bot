@@ -6,9 +6,12 @@ use DateTime;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use PZBot\Commands\AbstractCommand;
+use PZBot\CustomCommands\Middleware\AutoDeleteMessagesMiddleware;
+use PZBot\Database\ChatMessagesHistory;
 use PZBot\Database\ServerStatus;
 use PZBot\Exceptions\Checked\LogsFilePremissionDeniedException;
 use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
+use PZBot\Helpers\TelegramRequestHelper;
 use PZBot\Service\LogsParser\DTO\UserActivityObject;
 
 class StatusCommand extends AbstractCommand
@@ -39,6 +42,16 @@ class StatusCommand extends AbstractCommand
     protected $private_only = false;
 
     /**
+     * @inheritDoc
+     */
+    function middleware(): array 
+    {
+        return [
+            new AutoDeleteMessagesMiddleware
+        ];
+    }
+
+    /**
      * Main command execution
      *
      * @return ServerResponse
@@ -48,12 +61,13 @@ class StatusCommand extends AbstractCommand
     {
         $serverStatus = $this->getServerStatus();
         $playersStatus = $this->getPlayersStatus();
-        
 
-        return $this->replyToChat(sprintf(
+        $response = $this->replyToChat(sprintf(
             "%s\n\n%s",
             $serverStatus, $playersStatus
         ));
+
+        return $response;
     }
 
     public function getServerStatus(): string

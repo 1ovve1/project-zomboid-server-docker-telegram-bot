@@ -43,7 +43,9 @@ class AskCommand extends AbstractCommand
 
   function createHook(): void
   {
-      $this->chatGpt = ChatGpt::fromEnv($this->appConfig);
+    parent::createHook();
+    
+    $this->chatGpt = ChatGpt::fromEnv($this->appConfig);
   }
 
   /**

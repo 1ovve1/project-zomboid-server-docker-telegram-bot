@@ -38,4 +38,12 @@ class TelegramRequestHelper
       ]
     );
   }
+
+  static function deleteMessage(int $chatId, int $messageId): void
+  {
+    Request::deleteMessage([
+      'chat_id' => $chatId,
+      'message_id' => $messageId,
+    ]);
+  }
 }

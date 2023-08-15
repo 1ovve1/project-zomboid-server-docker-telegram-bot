@@ -18,6 +18,8 @@ abstract class AdminCommand extends AbstractCommand
 
     function createHook(): void
     {
+        parent::createHook();
+
         $this->managerFactory = new StatusManagerFactory(
             new ExecutorFactory(
                 new BashCommandResolver
@@ -29,7 +31,6 @@ abstract class AdminCommand extends AbstractCommand
         if (User::isNotAdmin($this->user->getId())) {
             throw new TelegramException("User is not admin");
         }
-
     }
 
     function getManager(): ManagerInterface
