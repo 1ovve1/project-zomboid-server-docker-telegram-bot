@@ -33,8 +33,7 @@ class AutoDeleteMessagesMiddleware implements MiddlewareInterface
 
       ChatMessagesHistory::updateMessageHistory(
         $command, 
-        $chatId, 
-        $userId, 
+        ($chatId < 0) ? $userId: $chatId, 
         $userMessageId, 
         $botMessageId
       );
