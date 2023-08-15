@@ -30,6 +30,7 @@ class ChatMessagesHistory extends QueryBuilder implements MigrateAble
   {
     $queryResult = self::select()
       ->where('command_class', $command::class)
+      ->andWhere('chat_id', $chatId)
       ->limit(1)
       ->save();
 
