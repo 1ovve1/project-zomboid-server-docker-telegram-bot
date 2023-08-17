@@ -2,6 +2,7 @@
 
 namespace PZBot\Events;
 use PZBot\Env;
+use PZBot\Events\Handlers\ChatGptSylphietteMessageHandler;
 use PZBot\Events\Handlers\ChatGptTsundereMessageHandler;
 use PZBot\Events\Handlers\HandlersCollection;
 use PZBot\Events\Handlers\ServerStatusHandler;
@@ -43,7 +44,7 @@ class EmmiterFactory implements EmmiterFactoryInterface
         ),
 
         'goodNightMessage' => TimerHandler::fromString(
-          new ChatGptTsundereMessageHandler(
+          new ChatGptSylphietteMessageHandler(
             ImageResolver::fromEnv($this->config), 
             ChatGpt::fromEnv($this->config)
           ),
