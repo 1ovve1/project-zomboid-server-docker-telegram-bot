@@ -50,12 +50,12 @@ class ChatGpt
         ''
       );
 
-      if (strlen($totalMessagesString) < $this->tokenLimit) {
+      if (strlen($totalMessagesString) > $this->tokenLimit) {
         break;
       }
 
       $messageCollection = $tmpMessageCollection;
-      $limit--;
+      $limit++;
     }
 
     
