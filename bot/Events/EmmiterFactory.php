@@ -1,9 +1,12 @@
 <?php declare(strict_types=1);
 
 namespace PZBot\Events;
+use DateInterval;
+use DateTimeImmutable;
 use PZBot\Env;
 use PZBot\Events\Handlers\ChatGptTsundereMessageHandler;
 use PZBot\Events\Handlers\HandlersCollection;
+use PZBot\Events\Handlers\RecreateAppHandler;
 use PZBot\Events\Handlers\ServerStatusHandler;
 use PZBot\Events\Handlers\TimerHandler;
 use PZBot\Service\ImageResolver;
@@ -21,6 +24,15 @@ class EmmiterFactory implements EmmiterFactoryInterface
   function getEmmiter(): Emmiter
   {
     $eventsCollection = new EventsCollection;
+
+    $eventsCollection->addEventListener(
+      EventsEnum::BEFORE_HANDLE_UPDATES,
+      new TimerHandler(
+        new RecreateAppHandler(),
+        new DateTimeImmutable(),
+        DateInterval::createFromDateString("8 hours"),
+      )
+    );
 
     $eventsCollection->addEventListener(
       EventsEnum::AFTER_HANDLE_RESPONSE,

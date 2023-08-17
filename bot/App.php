@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
 namespace PZBot;
-use DateTime;
+
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\TelegramLog;
 use PZBot\Events\Emmiter;
 use PZBot\Events\EmmiterFactoryInterface;
 use PZBot\Events\EventsEnum;
+use PZBot\Telegram\TelegramCoreInterface;
 use Throwable;
 
 class App
@@ -57,7 +58,7 @@ class App
    */
   private function telegramUpdateCycle(): void
   {
-    $this->emmiter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES);
+    $this->emmiter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES, $this->core);
 
     $response = $this->handleUpdates();
   

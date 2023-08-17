@@ -9,6 +9,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use QueryBox\DBFacade;
 
 /**
  * Global constants
@@ -31,6 +32,11 @@ foreach ($_ENV as $name => &$param) {
     $param = BASE_DIR . '/' . $param;
   }
 }
+
+/**
+ * Initialize global BD facade
+ */
+DBFacade::registerGlobalDB($_ENV, true);
 
 /**
  * Initialize logger instance

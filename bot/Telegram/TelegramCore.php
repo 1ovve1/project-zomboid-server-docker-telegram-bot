@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace PZBot;
+namespace PZBot\Telegram;
 use Longman\TelegramBot\Telegram;
+use PZBot\Env;
 
 class TelegramCore extends Telegram implements TelegramCoreInterface
 {
