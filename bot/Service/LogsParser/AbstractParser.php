@@ -2,14 +2,12 @@
 
 namespace PZBot\Service\LogsParser;
 
+use PZBot\Exceptions\Checked\LogsFilePremissionDeniedException;
+use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
 use PZBot\Service\LogsParser\DTO\UniqueDTOInterface;
 
 abstract class AbstractParser implements ParserInterface
 {
-  /**
-   * @var File
-   */
-  protected readonly File $file;
   /**
    * @var array<ParserOptionsEnum>
    */
@@ -44,23 +42,6 @@ abstract class AbstractParser implements ParserInterface
   function __construct(ParserOptionsEnum ...$options)
   {
     $this->options = $options;
-    $this->file = new File(
-      $this->getFilePath()
-    );
-  }
-
-  /**
-   * Parse file data using options
-   *
-   * @return array
-   */
-  private function getFileData(): array
-  {
-    if ($this->isOption(ParserOptionsEnum::FROM_TOP)) {
-      return array_reverse($this->file->data);
-    } 
-
-    return $this->file->data;
   }
 
   /**
@@ -78,19 +59,26 @@ abstract class AbstractParser implements ParserInterface
    * Parse data and return array
    *
    * @return array
+   * @throws LogsFilePremissionDeniedException
+   * @throws LogsFileWasNotFoundedException
    */
   function parse(): array
   {
-    $data = $this->getFileData();
+    $file = new File($this->getFilePath());
 
-    foreach ($data as $counter => $line) {
-      preg_match($this->getRegExp(), $line, $mathces);
+    $generator = match($this->isOption(ParserOptionsEnum::FROM_TOP)) {
+      true => $file->openReverse(),
+      default => $file->open()
+    };
 
-      if (empty($mathces)) {
+    foreach ($generator as $counter => $line) {
+      preg_match($this->getRegExp(), $line, $matches);
+
+      if (empty($matches)) {
         continue;
       }
 
-      $dto = $this->matchHandler($mathces);
+      $dto = $this->matchHandler($matches);
       $this->resolveData($dto);
 
       if ($this->isOption(ParserOptionsEnum::ONCE) || $this->limitReached($counter)) {

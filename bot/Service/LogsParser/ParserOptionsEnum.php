@@ -9,7 +9,7 @@ enum ParserOptionsEnum
   case ONCE; 
   case DEFAULT;
 
-  function isUnuqie(): bool
+  function isUnique(): bool
   {
     return $this === ParserOptionsEnum::UNIQUE;
   }

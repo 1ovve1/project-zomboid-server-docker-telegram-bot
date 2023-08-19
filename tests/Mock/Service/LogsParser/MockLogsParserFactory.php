@@ -9,14 +9,14 @@ class MockLogsParserFactory
   function getUserStatusParser(): ParserInterface
   {
     return MockUserStatusParser::create(
-      ParserOptionsEnum::UNIQUE, ParserOptionsEnum::FROM_TOP
+      ParserOptionsEnum::UNIQUE
     )->setLimit(50);
   }
 
   function getServerStatusParser(): ParserInterface
   {
     return MockServerStartParser::create(
-      ParserOptionsEnum::ONCE, ParserOptionsEnum::FROM_TOP
+      ParserOptionsEnum::ONCE
     )->setLimit(50);
   }
 }

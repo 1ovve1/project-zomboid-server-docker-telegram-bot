@@ -62,12 +62,10 @@ class StatusCommand extends AbstractCommand
         $serverStatus = $this->getServerStatus();
         $playersStatus = $this->getPlayersStatus();
 
-        $response = $this->replyToChat(sprintf(
+        return $this->replyToChat(sprintf(
             "%s\n\n%s",
             $serverStatus, $playersStatus
         ));
-
-        return $response;
     }
 
     public function getServerStatus(): string
@@ -98,17 +96,13 @@ class StatusCommand extends AbstractCommand
 
         $count = 0;
         foreach ($lastPzUsersActivities as $activity) {
-            $daysAgo = (new DateTime())->diff($activity->activityTime)->d;
-
-            if ($daysAgo < 7) {
-                $players .= sprintf(
-                    "\t%d) %s\n", 
-                    ++$count, 
-                    $activity->toString()
-                );
-            }
+            $players .= sprintf(
+                "\t%d) %s\n",
+                ++$count,
+                $activity->toString()
+            );
         }
-        
+
         return $players;
     }
 }

@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace PZBot\Service\LogsParser;
+use Generator;
 use PZBot\Exceptions\Checked\LogsFilePremissionDeniedException;
 use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
 
@@ -8,30 +9,30 @@ use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
 class File
 {
   readonly string $filePath;
-  readonly array $data;
+  readonly Generator $data;
 
   /**
    * Load file by regex filepath
    * Then user $instance->data for data
    *
    * @param string $filePath
-   * @throws LogsFileWasNotFoundedException
    * @throws LogsFilePremissionDeniedException
+   * @throws LogsFileWasNotFoundedException
    */
   function __construct(string $filePath) 
   {
     $this->filePath = $this->resolveFilePath($filePath);
-    $this->data = $this->open($this->filePath);
+    $this->data = $this->open();
   }
 
   /**
-   * Resolve file path with regex sintax
+   * Resolve file path with regex syntax
    *
    * @param string $filePath
    * @return string
    * @throws LogsFileWasNotFoundedException
    */
-  protected static function resolveFilePath(string $filePath): string 
+  private function resolveFilePath(string $filePath): string 
   {
     if (!glob($filePath)) {
       if (!glob(BASE_DIR . '/' . $filePath)) {
@@ -47,18 +48,50 @@ class File
   /**
    * Open the file data
    *
-   * @param string $filePath
-   * @return array<string>
+   * @return Generator
    * @throws LogsFilePremissionDeniedException
    */
-  protected static function open(string $filePath): array
+  function open(): Generator
   {
-    $file = file($filePath, FILE_IGNORE_NEW_LINES);
+      $file = fopen($this->filePath, 'r');
+
+      if (is_bool($file)) {
+        throw new LogsFilePremissionDeniedException($this->filePath);
+      }
+
+      while (($line = fgets($file)) !== false) {
+        yield $line;
+      }
+
+      fclose($file);
+  }
+
+  /**
+   * Open the file data
+   *
+   * @return Generator
+   * @throws LogsFilePremissionDeniedException
+   */
+  function openReverse(): Generator
+  {
+    $file = fopen($this->filePath, 'r');
 
     if (is_bool($file)) {
-      throw new LogsFilePremissionDeniedException($filePath);
+      throw new LogsFilePremissionDeniedException($this->filePath);
     }
 
-    return $file;
+    $buffer = '';
+    for($x_pos = 0; fseek($file, $x_pos, SEEK_END) !== -1; $x_pos--) {
+      $char = fgetc($file);
+
+      if ($char !== PHP_EOL) {
+        $buffer = $char . $buffer;
+      } else {
+        yield $buffer;
+        $buffer = '';
+      }
+    }
+
+    fclose($file);
   }
 }
