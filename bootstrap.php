@@ -32,6 +32,7 @@ foreach ($_ENV as $name => &$param) {
     $param = BASE_DIR . '/' . $param;
   }
 }
+$_ENV["BASE_DIR"] = basename(__DIR__);
 
 /**
  * Initialize global BD facade

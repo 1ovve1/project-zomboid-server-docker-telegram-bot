@@ -14,11 +14,11 @@ class ExecutorCommandException extends CheckedException
   function __construct(CommandListEnum $command, string $rawCommand, CommandResultObject $commandResult)
   {
     $message = sprintf(
-      "Faild to execute '%s' command.\nCommand:%s\nRaw result:\n%s",
+      "Failed to execute '%s' command.\nCommand:%s\nRaw result:\n%s",
       $command->value, $rawCommand, $commandResult->getRawResult()
     );
 
-    TelegramLog::error($message);
+    TelegramLog::warning($message);
 
     parent::__construct($message, self::CODE);
   }

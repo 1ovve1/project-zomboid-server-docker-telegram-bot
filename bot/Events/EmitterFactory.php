@@ -9,6 +9,8 @@ use PZBot\Events\Handlers\HandlersCollection;
 use PZBot\Events\Handlers\RecreateAppHandler;
 use PZBot\Events\Handlers\ServerStatusHandler;
 use PZBot\Events\Handlers\TimerHandler;
+use PZBot\Server\Commands\Bash\BashCommandResolver;
+use PZBot\Server\Commands\Factories\ExecutorFactory;
 use PZBot\Service\ImageResolver;
 use PZBot\Service\LogsParser\LogsParserFactory;
 use PZBot\Service\OpenAI\ChatGpt;
@@ -32,7 +34,7 @@ class EmitterFactory implements EmitterFactoryInterface
     $eventsCollection->addEventListener(
       EventsEnum::AFTER_HANDLE_RESPONSE,
       new ServerStatusHandler(
-        new LogsParserFactory
+        new LogsParserFactory, new ExecutorFactory(new BashCommandResolver())
       )
     );
 
