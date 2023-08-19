@@ -2,31 +2,37 @@
 
 namespace PZBot\Telegram;
 use Longman\TelegramBot\Telegram;
-use PZBot\Env;
 
+/**
+ * Telegram wrapper
+ */
 class TelegramCore extends Telegram implements TelegramCoreInterface
 {
-  protected Env $config;
-
-  function __construct(Env $config)
+  /**
+   * Create telegram core instance
+   *
+   * @param string $botApiKey
+   * @param string $botUsername
+   * @param string $commandsPath - path for bot commands
+   * @param bool $useDb - flag for mysql db usage
+   * @param array{
+   *   host?: string,
+   *   user: string,
+   *   password: string,
+   *   database: string
+   * } $dbConnectionParams - db connection params
+   * @throws \Longman\TelegramBot\Exception\TelegramException
+   */
+  function __construct(string $botApiKey,
+                       string $botUsername,
+                       string $commandsPath,
+                       bool $useDb = false,
+                       array $dbConnectionParams = [])
   {
-    $this->config = $config;
-
-    $botApiKey = $config->get("BOT_API_KEY");
-    $botUsername = $config->get("BOT_USERNAME");
-    $commandsPath = $config->get("BOT_COMMANDS_PATH", __DIR__ . "/CustomCommads");
-    $useDb = $config->get("BOT_USE_DB", false);
-    $dbConn = [
-      'host'     => $config->get("DB_HOST"),
-      'user'     => $config->get("DB_USER"),
-      'password' => $config->get("DB_PASS"),
-      'database' => $config->get("DB_NAME"),
-    ];
-
     $this->addCommandsPaths([$commandsPath]);
 
     if ($useDb) {
-      $this->enableMySql($dbConn);
+      $this->enableMySql($dbConnectionParams);
     } else {
       $this->useGetUpdatesWithoutDatabase();
     }
@@ -37,8 +43,25 @@ class TelegramCore extends Telegram implements TelegramCoreInterface
 
   }
 
-  public function getConfig(): Env
+  /**
+   * Create telegram core instance use $_ENV params from .env
+   *
+   * @return self
+   * @throws \Longman\TelegramBot\Exception\TelegramException
+   */
+  public static function fromEnv(): self
   {
-    return $this->config;
+      return new self(
+          env("BOT_API_KEY"),
+          env("BOT_USERNAME"),
+          env("BOT_COMMANDS_PATH", __DIR__ . "/CustomCommands"),
+          (bool)env("BOT_USE_DB", false),
+          [
+              'host'     => env("DB_HOST", 'localhost'),
+              'user'     => env("DB_USER", ''),
+              'password' => env("DB_PASS", ''),
+              'database' => env("DB_NAME", ''),
+          ],
+      );
   }
 }

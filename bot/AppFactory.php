@@ -1,29 +1,32 @@
 <?php declare(strict_types=1);
 
 namespace PZBot;
-use PZBot\Events\EmmiterFactory;
+use Longman\TelegramBot\Exception\TelegramException;
+use PZBot\Events\EmitterFactory;
+use PZBot\Events\EmitterFactoryInterface;
 use PZBot\Telegram\TelegramCoreFactory;
 
 class AppFactory
 {
-  protected Env $config;
   protected TelegramCoreFactory $telegramCoreFactory;
+  protected EmitterFactoryInterface $emitterFactory;
 
-  function __construct(Env $config) {
-    $this->config = $config;
-    $this->telegramCoreFactory = new TelegramCoreFactory($config);
+  function __construct() {
+    $this->telegramCoreFactory = new TelegramCoreFactory();
+    $this->emitterFactory = new EmitterFactory();
   }
 
   /**
-   * Use ENV params for configuration and default emmiter
+   * Use ENV params for configuration and default emitter
    *
    * @return App
+   * @throws TelegramException
    */
   function getApp(): App
   {
     return new App(
       $this->telegramCoreFactory->getProxy(),
-      new EmmiterFactory($this->config)
+      $this->emitterFactory->getEmitter()
     );
   }
 }

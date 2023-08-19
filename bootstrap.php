@@ -57,3 +57,20 @@ TelegramLog::initialize(
       ->setFormatter(new LineFormatter(null, null, false, true)),
   ])
 );
+
+/**
+ * Helpers section
+ */
+
+/**
+ * Get param from config
+ *
+ * @param string $key
+ * @param mixed $default
+ * @return void
+ * @throws \PZBot\Exceptions\Unchecked\EnvParameterNotFoundException - if default section is not pass
+ */
+function env(string $key, mixed $default = null): mixed
+{
+    return (new \PZBot\Config\Env())->get($key, $default);
+}

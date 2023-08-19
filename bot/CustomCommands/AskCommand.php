@@ -45,7 +45,7 @@ class AskCommand extends AbstractCommand
   {
     parent::createHook();
     
-    $this->chatGpt = ChatGpt::fromEnv($this->appConfig);
+    $this->chatGpt = ChatGpt::fromEnv();
   }
 
   /**
@@ -58,7 +58,7 @@ class AskCommand extends AbstractCommand
   {
     $question = $this->getMessageText();
 
-    $limit = $this->appConfig->get("BOT_CHATGPT_USER_MSG_LENGTH", 500);
+    $limit = env("BOT_CHATGPT_USER_MSG_LENGTH", 500);
     if (strlen($question) >= $limit) {
       return $this->replyToChat("Too many symbols! Please use less than {$limit} chars in your message.");
     }

@@ -5,7 +5,6 @@ namespace PZBot;
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\TelegramLog;
 use PZBot\Events\Emmiter;
-use PZBot\Events\EmmiterFactoryInterface;
 use PZBot\Events\EventsEnum;
 use PZBot\Telegram\TelegramCoreInterface;
 use Throwable;
@@ -17,18 +16,18 @@ class App
    */
   readonly TelegramCoreInterface $core;
   /**
-   * @var Emmiter $emmiter
+   * @var Emmiter $emitter
    */
-  readonly Emmiter $emmiter;
+  readonly Emmiter $emitter;
 
   /**
    * @param TelegramCoreInterface $core - telegram core
-   * @param EmmiterFactoryInterface $emmiterFactory
+   * @param Emmiter $emitter
    */
-  public function __construct(TelegramCoreInterface $core, EmmiterFactoryInterface $emmiterFactory) 
+  public function __construct(TelegramCoreInterface $core, Emmiter $emitter)
   {
     $this->core = $core;
-    $this->emmiter = $emmiterFactory->getEmmiter();
+    $this->emitter = $emitter;
   }
 
   /**
@@ -58,15 +57,15 @@ class App
    */
   private function telegramUpdateCycle(): void
   {
-    $this->emmiter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES, $this->core);
+    $this->emitter->emmit(EventsEnum::BEFORE_HANDLE_UPDATES, $this->core);
 
     $response = $this->handleUpdates();
   
-    $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_UPDATES);
+    $this->emitter->emmit(EventsEnum::AFTER_HANDLE_UPDATES);
 
     $this->handleResponse($response);
 
-    $this->emmiter->emmit(EventsEnum::AFTER_HANDLE_RESPONSE);
+    $this->emitter->emmit(EventsEnum::AFTER_HANDLE_RESPONSE);
   }
 
   /**
@@ -98,9 +97,7 @@ class App
    */
   private function shedulerTasks(): void
   {
-    $config = $this->core->getConfig();
-
-    $this->emmiter->emmit(
+    $this->emitter->emmit(
       EventsEnum::SHEDULER, 
       ['goodMorningMessage' => "доброе утро"],
       ['goodNightMessage' => "доброй ночи"],

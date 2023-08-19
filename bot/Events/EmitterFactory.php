@@ -3,7 +3,6 @@
 namespace PZBot\Events;
 use DateInterval;
 use DateTimeImmutable;
-use PZBot\Env;
 use PZBot\Events\Handlers\ChatGptSylphietteMessageHandler;
 use PZBot\Events\Handlers\ChatGptTsundereMessageHandler;
 use PZBot\Events\Handlers\HandlersCollection;
@@ -14,15 +13,10 @@ use PZBot\Service\ImageResolver;
 use PZBot\Service\LogsParser\LogsParserFactory;
 use PZBot\Service\OpenAI\ChatGpt;
 
-class EmmiterFactory implements EmmiterFactoryInterface
+class EmitterFactory implements EmitterFactoryInterface
 {
-  protected Env $config;
 
-  function __construct(Env $config) {
-    $this->config = $config;
-  }
-
-  function getEmmiter(): Emmiter
+  function getEmitter(): Emmiter
   {
     $eventsCollection = new EventsCollection;
 
@@ -48,19 +42,19 @@ class EmmiterFactory implements EmmiterFactoryInterface
         
         'goodMorningMessage' => TimerHandler::fromString(
           new ChatGptTsundereMessageHandler(
-            ImageResolver::fromEnv($this->config), 
-            ChatGpt::fromEnv($this->config)
+            ImageResolver::fromEnv(),
+            ChatGpt::fromEnv()
           ),
-          $this->config->get('BOT_CHATGPT_GOOD_MORNING_TIME'),
+          env('BOT_CHATGPT_GOOD_MORNING_TIME'),
           "1 day"
         ),
 
         'goodNightMessage' => TimerHandler::fromString(
           new ChatGptSylphietteMessageHandler(
-            ImageResolver::fromEnv($this->config), 
-            ChatGpt::fromEnv($this->config)
+            ImageResolver::fromEnv(),
+            ChatGpt::fromEnv()
           ),
-          $this->config->get('BOT_CHATGPT_GOOD_NIGHT_TIME'),
+          env('BOT_CHATGPT_GOOD_NIGHT_TIME'),
           "1 day"
         )
       ])

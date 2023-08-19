@@ -77,9 +77,9 @@ class StatusCommand extends AbstractCommand
         return sprintf(
             "🤖 Server status: %s\n🏠 IP: %s\n🕳 Port: %d\n㊙ Password: %s",
             $status->withSmile(), 
-            $this->appConfig->get("HOST_IP", "unknown"), 
-            $this->appConfig->get("PORT", "unknown"), 
-            $this->appConfig->get("PASSWORD", "No"),
+            env("HOST_IP", "unknown"),
+            env("PORT", "unknown"),
+            env("PASSWORD", "No"),
         );
     }
 

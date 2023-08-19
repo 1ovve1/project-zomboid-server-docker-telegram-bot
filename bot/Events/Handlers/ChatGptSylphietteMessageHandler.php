@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 namespace PZBot\Events\Handlers;
 
-use DateTime;
-use PZBot\Env;
 use PZBot\Events\HandlerInterface;
 use PZBot\Exceptions\Checked\PathWasNotFoundException;
 use PZBot\Helpers\TelegramRequestHelper;
@@ -15,17 +13,18 @@ class ChatGptSylphietteMessageHandler implements HandlerInterface
   /**
    * @var ImageResolver - service
    */
-  protected ImageResolver $imageReslover;
+  protected ImageResolver $imageResolver;
   /**
    * @var ChatGpt - service
    */
   protected ChatGpt $chatGpt;
 
   /**
-   * @param Env $config - config instance
+   * @param ImageResolver $imageResolver
+   * @param ChatGpt $chatGpt
    */
   public function __construct(ImageResolver $imageResolver, ChatGpt $chatGpt) {
-    $this->imageReslover = $imageResolver;
+    $this->imageResolver = $imageResolver;
     $this->chatGpt = $chatGpt;
   }
 
@@ -43,7 +42,7 @@ class ChatGptSylphietteMessageHandler implements HandlerInterface
       $content = $choice->message->content;
 
       try {
-        $imagePath = $this->imageReslover->getRandomPicturePath("/sylphiette");
+        $imagePath = $this->imageResolver->getRandomPicturePath("/sylphiette");
 
         TelegramRequestHelper::sendImageToAllGroups($imagePath, $content);
       } catch (PathWasNotFoundException) {

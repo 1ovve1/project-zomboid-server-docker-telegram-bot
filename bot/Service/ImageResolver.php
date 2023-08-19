@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 namespace PZBot\Service;
-use PZBot\Env;
 use PZBot\Exceptions\Checked\PathWasNotFoundException;
 
 class ImageResolver
@@ -14,11 +13,11 @@ class ImageResolver
     $this->downloadPath = $downloadPath;
   }
 
-  static function fromEnv(Env $config): self
+  static function fromEnv(): self
   {
     return new self(
-      $config->get("BOT_UPLOAD_PATH"),
-      $config->get("BOT_DOWNLOAD_PATH"),
+      env("BOT_UPLOAD_PATH"),
+      env("BOT_DOWNLOAD_PATH"),
     );
   }
 

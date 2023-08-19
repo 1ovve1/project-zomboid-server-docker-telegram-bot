@@ -6,9 +6,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Entities\User;
 use Longman\TelegramBot\Telegram;
-use PZBot\Commands\Middleware\AbstractMiddleware;
 use PZBot\Commands\Middleware\MiddlewareInterface;
-use PZBot\Env;
 use PZBot\Service\LogsParser\LogsParserFactory;
 
 abstract class AbstractCommand extends SystemCommand
@@ -26,12 +24,6 @@ abstract class AbstractCommand extends SystemCommand
    */
   protected Message $message;
   /**
-   * Application config
-   *
-   * @var Env
-   */
-  protected Env $appConfig;
-  /**
    * Logs parser factory instance
    *
    * @var LogsParserFactory
@@ -42,7 +34,6 @@ abstract class AbstractCommand extends SystemCommand
   {
     parent::__construct($telegram, $update);
 
-    $this->appConfig = new Env();
     $this->logsParserFactory = new LogsParserFactory;
   }
   

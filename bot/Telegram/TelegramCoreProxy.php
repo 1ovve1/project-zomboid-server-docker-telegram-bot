@@ -2,42 +2,113 @@
 
 namespace PZBot\Telegram;
 use Longman\TelegramBot\Entities\ServerResponse;
-use PZBot\Env;
-use PZBot\Telegram\TelegramCoreFactory;
+use Longman\TelegramBot\Exception\TelegramException;
 
 class TelegramCoreProxy implements TelegramCoreInterface, TelegramCoreProxyInterface
 {
-  protected TelegramCoreFactory $coreFactory;
   protected TelegramCoreInterface $coreInstance;
 
-  public function __construct(TelegramCoreFactory $coreFactory) {
-    $this->coreFactory = $coreFactory;
-    $this->coreInstance = $coreFactory->getCore();
+  private string $botApiKey;
+  private string $botUsername;
+  private string $commandsPath;
+  private bool $useDb = false;
+  private array $dbConnectionParams = [];
+
+  /**
+   * @return self
+   * @throws TelegramException
+   */
+  static function fromEnv(): self
+  {
+    return new self(
+        env("BOT_API_KEY"),
+        env("BOT_USERNAME"),
+        env("BOT_COMMANDS_PATH", __DIR__ . "/CustomCommands"),
+        (bool)env("BOT_USE_DB", false),
+        [
+            'host'     => env("DB_HOST", 'localhost'),
+            'user'     => env("DB_USER", ''),
+            'password' => env("DB_PASS", ''),
+            'database' => env("DB_NAME", ''),
+        ],
+    );
   }
 
-  public function enableMySql(array $credentials, string $table_prefix = '', string $encoding = 'utf8mb4')
+  /**
+   * @param string $botApiKey
+   * @param string $botUsername
+   * @param string $commandsPath
+   * @param bool $useDb
+   * @param array $dbConnectionParams
+   * @throws TelegramException
+   */
+  public function __construct(string $botApiKey,
+                              string $botUsername,
+                              string $commandsPath,
+                              bool $useDb = false,
+                              array $dbConnectionParams = [])
+  {
+    $this->botApiKey = $botApiKey;
+    $this->botUsername = $botUsername;
+    $this->commandsPath = $commandsPath;
+    $this->useDb = $useDb;
+    $this->dbConnectionParams = $dbConnectionParams;
+
+    $this->coreInstance = $this->createTelegramCoreInstance();
+  }
+
+  /**
+   * @return TelegramCoreInterface
+   * @throws TelegramException
+   */
+  function createTelegramCoreInstance(): TelegramCoreInterface
+  {
+    return new TelegramCore(
+        $this->botApiKey,
+        $this->botUsername,
+        $this->commandsPath,
+        $this->useDb,
+        $this->dbConnectionParams
+    );
+  }
+
+  /**
+   * @param array $credentials
+   * @param string $table_prefix
+   * @param string $encoding
+   * @return void
+   */
+  public function enableMySql(array $credentials, string $table_prefix = '', string $encoding = 'utf8mb4'): void
   {
     $this->coreInstance->enableMySql($credentials, $table_prefix, $encoding);
   }
 
+  /**
+   * @param $data
+   * @param int|null $timeout
+   * @return ServerResponse
+   */
   public function handleGetUpdates($data = null, ?int $timeout = null): ServerResponse
   {
     return $this->coreInstance->handleGetUpdates($data, $timeout);
   }
 
-  public function useGetUpdatesWithoutDatabase(bool $enable = true)
+  /**
+   * @param bool $enable
+   * @return void
+   */
+  public function useGetUpdatesWithoutDatabase(bool $enable = true): void
   {
     $this->useGetUpdatesWithoutDatabase($enable);
   }
-  
-  public function getConfig(): Env
-  {
-    return $this->coreInstance->getConfig();
-  }
 
+  /**
+   * @return void
+   * @throws TelegramException
+   */
   public function recreate(): void
   {
     unset($this->coreInstance);
-    $this->coreInstance = $this->coreFactory->getCore();
+    $this->coreInstance = $this->createTelegramCoreInstance();
   }
 }

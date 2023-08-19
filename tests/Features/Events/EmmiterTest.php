@@ -3,7 +3,7 @@
 namespace PZBot\Tests\Features\Events;
 use PHPUnit\Framework\TestCase;
 use PZBot\Events\Emmiter;
-use PZBot\Events\EmmiterFactoryInterface;
+use PZBot\Events\EmitterFactoryInterface;
 use PZBot\Events\EventsCollection;
 use PZBot\Events\EventsEnum;
 use PZBot\Tests\Mock\Events\MockEmmiterFactory;

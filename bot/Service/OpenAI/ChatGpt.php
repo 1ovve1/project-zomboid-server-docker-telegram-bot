@@ -6,7 +6,6 @@ use OpenAI\Client;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseChoice;
 use PZBot\Database\ChatGptDialog;
-use PZBot\Env;
 
 class ChatGpt
 {
@@ -24,12 +23,12 @@ class ChatGpt
     $this->tokenPerMessageLimit = (int)$tokenPerMessageLimit;
   }
 
-  static function fromEnv(Env $config): self
+  static function fromEnv(): self
   {
     return new self(
-      $config->get("BOT_CHATGPT_API_KEY"),
-      $config->get("BOT_CHATGPT_TOKEN_LENGTH", self::DEFAULT_TOKEN_LENGHT),
-      $config->get("BOT_CHATGPT_USER_MSG_LENGTH", self::DEFAULT_TOKEN_PER_MESSAGE_LENGTH),
+      env("BOT_CHATGPT_API_KEY"),
+      env("BOT_CHATGPT_TOKEN_LENGTH", self::DEFAULT_TOKEN_LENGHT),
+      env("BOT_CHATGPT_USER_MSG_LENGTH", self::DEFAULT_TOKEN_PER_MESSAGE_LENGTH),
     );
   }
 

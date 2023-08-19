@@ -16,6 +16,10 @@ abstract class AdminCommand extends AbstractCommand
 {
     protected ManagerFactoryInterface $managerFactory;
 
+    /**
+     * @return void
+     * @throws TelegramException
+     */
     function createHook(): void
     {
         parent::createHook();
