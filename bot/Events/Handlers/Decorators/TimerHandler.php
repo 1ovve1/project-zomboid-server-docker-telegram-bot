@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace PZBot\Events\Handlers;
+namespace PZBot\Events\Handlers\Decorators;
 
 use DateInterval;
 use DateTimeImmutable;
 use PZBot\Events\HandlerInterface;
-
 use function call_user_func;
 
 class TimerHandler implements HandlerInterface

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PZBot\Events\Handlers;
+namespace PZBot\Events\Handlers\Decorators;
 
 use PZBot\Events\HandlerInterface;
 use RuntimeException;

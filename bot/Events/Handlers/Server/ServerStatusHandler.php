@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace PZBot\Events\Handlers;
+namespace PZBot\Events\Handlers\Server;
 
-use Longman\TelegramBot\TelegramLog;
 use PZBot\Database\ServerStatus;
 use PZBot\Events\HandlerInterface;
 use PZBot\Exceptions\Checked\ExecutorCommandException;
@@ -12,7 +11,6 @@ use PZBot\Server\Commands\CommandListEnum;
 use PZBot\Server\Commands\Factories\ExecutorFactoryInterface;
 use PZBot\Server\ServerStatusEnum;
 use PZBot\Service\LogsParser\LogsParserFactory;
-use PZBot\Service\LogsParser\ParserInterface;
 
 class ServerStatusHandler implements HandlerInterface
 {
