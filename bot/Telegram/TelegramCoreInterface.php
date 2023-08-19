@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace PZBot;
+namespace PZBot\Telegram;
 use Longman\TelegramBot\Entities\ServerResponse;
+use PZBot\Env;
 
 interface TelegramCoreInterface
 {

@@ -2,13 +2,16 @@
 
 namespace PZBot;
 use PZBot\Events\EmmiterFactory;
+use PZBot\Telegram\TelegramCoreFactory;
 
 class AppFactory
 {
   protected Env $config;
+  protected TelegramCoreFactory $telegramCoreFactory;
 
   function __construct(Env $config) {
     $this->config = $config;
+    $this->telegramCoreFactory = new TelegramCoreFactory($config);
   }
 
   /**
@@ -19,7 +22,7 @@ class AppFactory
   function getApp(): App
   {
     return new App(
-      new TelegramCore(new Env()),
+      $this->telegramCoreFactory->getProxy(),
       new EmmiterFactory($this->config)
     );
   }
