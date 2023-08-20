@@ -2,7 +2,6 @@
 
 namespace PZBot\Events\Handlers;
 
-use Longman\TelegramBot\TelegramLog;
 use PZBot\Database\ServerStatus;
 use PZBot\Events\HandlerInterface;
 use PZBot\Exceptions\Checked\ExecutorCommandException;
@@ -10,9 +9,7 @@ use PZBot\Exceptions\Checked\LogsFilePremissionDeniedException;
 use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
 use PZBot\Server\Commands\CommandListEnum;
 use PZBot\Server\Commands\Factories\ExecutorFactoryInterface;
-use PZBot\Server\ServerStatusEnum;
 use PZBot\Service\LogsParser\LogsParserFactory;
-use PZBot\Service\LogsParser\ParserInterface;
 
 class ServerStatusHandler implements HandlerInterface
 {
@@ -49,26 +46,31 @@ class ServerStatusHandler implements HandlerInterface
           ->execute(CommandListEnum::SERVER_STATUS);
 
       if ($result->isOK()) {
-        $logsParser = $this->logsParserFactory->getServerStartParser();
+        $this->checkLogs();
+      } else {
+        ServerStatus::setPengingIfNotRestarted();
+      }
+    } catch (ExecutorCommandException) {
+      ServerStatus::setDown();
+    } catch (\Throwable) {
+      ServerStatus::setUndefined();
+    }
+
+  }
+
+  function checkLogs(): void
+  {
+    try {
+      $logsParser = $this->logsParserFactory->getServerStartParser();
         $parseResult = $logsParser->parse();
 
         if (count($parseResult) > 0) {
-          ServerStatus::updateStatus(ServerStatusEnum::ACTIVE);
+          ServerStatus::setActive();
         } else {
-          if (!ServerStatus::isRestarted()) {
-            ServerStatus::updateStatus(ServerStatusEnum::PENDING);
-          }
+          ServerStatus::setPengingIfNotRestarted();
         }
-      } else {
-        if (!ServerStatus::isRestarted()) {
-          ServerStatus::updateStatus(ServerStatusEnum::DOWN);
-        }
-      }
-    } catch (ExecutorCommandException|LogsFilePremissionDeniedException|LogsFileWasNotFoundedException $e) {
-      ServerStatus::updateStatus(ServerStatusEnum::DOWN);
-    } catch (\Throwable) {
-      ServerStatus::updateStatus(ServerStatusEnum::UNDEFINED);
-    }
-
+    } catch(LogsFilePremissionDeniedException|LogsFileWasNotFoundedException) {
+      ServerStatus::setPengingIfNotRestarted();
+    } 
   }
 }

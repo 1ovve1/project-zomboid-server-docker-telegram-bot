@@ -41,6 +41,58 @@ class ServerStatus
   }
 
   /**
+   * Resolve down stratus
+   *
+   * @return void
+   */
+  public static function setPengingIfNotRestarted(): void
+  {
+    if (!ServerStatus::isRestarted()) {
+      ServerStatus::setPending();
+    }
+  }
+
+  /**
+   * @return void
+   */
+  public static function setActive(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::ACTIVE);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setDown(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::DOWN);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setPending(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::PENDING);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setRestart(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::RESTART);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setUndefined(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::UNDEFINED);
+  }
+
+  /**
    * @return boolean
    */
   public static function isRestarted(): bool
