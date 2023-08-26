@@ -1,5 +1,6 @@
-<?php declare(strict_types=1);
-namespace PZBot\Events\Handlers;
+<?php
+
+namespace PZBot\Events\Handlers\ChatGptMessages;
 
 use PZBot\Events\HandlerInterface;
 use PZBot\Exceptions\Checked\PathWasNotFoundException;
@@ -7,8 +8,7 @@ use PZBot\Helpers\TelegramRequestHelper;
 use PZBot\Service\ImageResolver;
 use PZBot\Service\OpenAI\ChatGpt;
 
-
-class ChatGptTsundereMessageHandler implements HandlerInterface
+abstract class ChatGptMessage implements HandlerInterface
 {
   /**
    * @var ImageResolver - service
@@ -33,17 +33,31 @@ class ChatGptTsundereMessageHandler implements HandlerInterface
   public function __invoke(mixed ...$params): void
   {
     foreach ($params as $message) {
-      $choice = $this->chatGpt->answerWithoutUserId("сгенерируй фразу, в которой ты в роли цундере девочки коротко говоришь \"{$message}\" в еë стиле. Без слов о том, что ты искуственный интеллект");
+      $choice = $this->chatGpt->answerWithoutUserId(
+          sprintf(
+              $this->getMessageFormat(),
+              $message
+          )
+      );
 
       $content = $choice->message->content;
 
       try {
-        $imagePath = $this->imageResolver->getRandomPicturePath("/tohsaka");
+        $imagePath = $this->imageResolver->getRandomPicturePath($this->getImageFolder());
 
         TelegramRequestHelper::sendImageToAllGroups($imagePath, $content);
       } catch (PathWasNotFoundException) {
         TelegramRequestHelper::sendMessageToAllGroups($content);
       }
     }
+  }
+
+  function getMessageFormat(): string
+  {
+    return '%';
+  }
+  function getImageFolder(): string
+  {
+    return '';
   }
 }

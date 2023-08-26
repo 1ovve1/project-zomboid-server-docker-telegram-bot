@@ -4,7 +4,7 @@ namespace PZBot\Tests\Features\Events\Handlers;
 use DateInterval;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use PZBot\Events\Handlers\TimerHandler;
+use PZBot\Events\Handlers\Decorators\TimerHandler;
 use PZBot\Tests\Mock\Events\Handlers\MockEvent;
 
 class TimerHandlerTest extends TestCase

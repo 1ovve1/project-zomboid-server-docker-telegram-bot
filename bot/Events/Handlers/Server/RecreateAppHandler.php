@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PZBot\Events\Handlers;
+namespace PZBot\Events\Handlers\Server;
 use PZBot\Events\HandlerInterface;
 use PZBot\Telegram\TelegramCoreProxyInterface;
 use QueryBox\DBFacade;
