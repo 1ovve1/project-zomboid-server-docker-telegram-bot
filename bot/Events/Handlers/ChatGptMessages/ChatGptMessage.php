@@ -43,7 +43,7 @@ abstract class ChatGptMessage implements HandlerInterface
       $content = $choice->message->content;
 
       try {
-        $imagePath = $this->imageResolver->getRandomPicturePath($this->getImageFolder());
+        $imagePath = $this->imageResolver->getRandomPicturePathUnique($this->getImageFolder());
 
         TelegramRequestHelper::sendImageToAllGroups($imagePath, $content);
       } catch (PathWasNotFoundException) {
