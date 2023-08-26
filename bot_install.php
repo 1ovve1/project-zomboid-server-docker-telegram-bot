@@ -7,6 +7,7 @@ use QueryBox\Migration\Container\QueryObject;
 use QueryBox\Migration\MetaTable;
 use PZBot\Database\ChatGptDialog;
 use PZBot\Database\ChatMessagesHistory;
+use PZBot\Database\PicturesHistory;
 
 require __DIR__ . "/bootstrap.php";
 
@@ -34,6 +35,7 @@ TelegramLog::info("Triyng to migrate other meta tables...");
 $tables = [
   ChatGptDialog::class,
   ChatMessagesHistory::class,
+  PicturesHistory::class,
 ];
 
 try {
