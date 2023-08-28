@@ -24,7 +24,7 @@ class StatusManagerDecorator implements ManagerInterface
 
     $lastStatus = ServerStatus::getLastStatus();
 
-    ServerStatus::updateStatus(StatusEnum::DOWN);
+    ServerStatus::updateStatus(ServerStatusEnum::DOWN);
 
     try {
       $this->getManager()->down();
@@ -46,7 +46,7 @@ class StatusManagerDecorator implements ManagerInterface
 
     $lastStatus = ServerStatus::getLastStatus();
 
-    ServerStatus::updateStatus(StatusEnum::PENDING);
+    ServerStatus::updateStatus(ServerStatusEnum::PENDING);
 
     try {
       $this->getManager()->up();
@@ -68,7 +68,7 @@ class StatusManagerDecorator implements ManagerInterface
 
     $lastStatus = ServerStatus::getLastStatus();
 
-    ServerStatus::updateStatus(StatusEnum::RESTART);
+    ServerStatus::updateStatus(ServerStatusEnum::RESTART);
 
     try {
       $this->getManager()->restart();

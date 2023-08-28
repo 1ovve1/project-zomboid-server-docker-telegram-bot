@@ -2,7 +2,7 @@
 
 namespace PZBot\Tests\Unit\Service\LogsParser;
 use PHPUnit\Framework\TestCase;
-use PZBot\Service\LogsParser\UserStatusEnum;
+use PZBot\Service\LogsParser\User\UserStatusEnum;
 
 class UserStatusEnumTest extends TestCase
 {

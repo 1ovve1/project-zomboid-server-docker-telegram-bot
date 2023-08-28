@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PZBot;
+namespace PZBot\Config;
 use PZBot\Exceptions\Unchecked\EnvParameterNotFoundException;
 
 /**

@@ -2,34 +2,33 @@
 
 namespace PZBot\Database;
 
-use Longman\TelegramBot\Request;
 use Longman\TelegramBot\TelegramLog;
 use PZBot\Helpers\TelegramRequestHelper;
-use PZBot\Server\StatusEnum;
+use PZBot\Server\ServerStatusEnum;
 
 class ServerStatus
 {
-  private static ?StatusEnum $lastStatus = null;
+  private static ?ServerStatusEnum $lastStatus = null;
 
-  public static function getLastStatus(): StatusEnum
+  public static function getLastStatus(): ServerStatusEnum
   {
     if (self::$lastStatus === null) {
-      self::$lastStatus = StatusEnum::ACTIVE;
+      self::$lastStatus = ServerStatusEnum::ACTIVE;
     }
 
     return self::$lastStatus;
   }
 
-  protected static function setLastStatus(StatusEnum $status): void
+  protected static function setLastStatus(ServerStatusEnum $status): void
   {
     self::$lastStatus = $status;
   }
 
   /**
-   * @param StatusEnum $status
+   * @param ServerStatusEnum $status
    * @return void
    */
-  public static function updateStatus(StatusEnum $status): void
+  public static function updateStatus(ServerStatusEnum $status): void
   {
 
     if (self::getLastStatus() !== $status) {
@@ -42,11 +41,63 @@ class ServerStatus
   }
 
   /**
+   * Resolve down stratus
+   *
+   * @return void
+   */
+  public static function setPengingIfNotRestarted(): void
+  {
+    if (!ServerStatus::isRestarted()) {
+      ServerStatus::setPending();
+    }
+  }
+
+  /**
+   * @return void
+   */
+  public static function setActive(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::ACTIVE);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setDown(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::DOWN);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setPending(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::PENDING);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setRestart(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::RESTART);
+  }
+
+  /**
+   * @return void
+   */
+  public static function setUndefined(): void
+  {
+    ServerStatus::updateStatus(ServerStatusEnum::UNDEFINED);
+  }
+
+  /**
    * @return boolean
    */
   public static function isRestarted(): bool
   {
-      return ServerStatus::getLastStatus() === StatusEnum::RESTART;
+      return ServerStatus::getLastStatus() === ServerStatusEnum::RESTART;
   }
 
   /**
@@ -54,7 +105,7 @@ class ServerStatus
    */
   public static function isPending(): bool
   {
-      return ServerStatus::getLastStatus() === StatusEnum::PENDING;
+      return ServerStatus::getLastStatus() === ServerStatusEnum::PENDING;
   }
 
   /**
@@ -62,7 +113,7 @@ class ServerStatus
    */
   public static function isDown(): bool
   {
-      return ServerStatus::getLastStatus() === StatusEnum::DOWN;
+      return ServerStatus::getLastStatus() === ServerStatusEnum::DOWN;
   }
 
   /**
@@ -70,7 +121,7 @@ class ServerStatus
    */
   public static function isActive(): bool
   {
-      return ServerStatus::getLastStatus() === StatusEnum::ACTIVE;
+      return ServerStatus::getLastStatus() === ServerStatusEnum::ACTIVE;
   }
 
   /**
@@ -78,7 +129,7 @@ class ServerStatus
    */
   public static function isUndefined(): bool
   {
-      return ServerStatus::getLastStatus() === StatusEnum::UNDEFINED;
+      return ServerStatus::getLastStatus() === ServerStatusEnum::UNDEFINED;
   }
 
 }

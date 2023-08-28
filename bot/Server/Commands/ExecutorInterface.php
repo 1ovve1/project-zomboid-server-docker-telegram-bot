@@ -8,8 +8,8 @@ interface ExecutorInterface
 {
   /**
    * @param CommandListEnum ...$commands
-   * @return CommandResultObject
+   * @return CommandResultObject|false - false if nothing to execute
    * @throws ExecutorCommandException
    */
-  function execute(CommandListEnum ...$commands): CommandResultObject;
+  function execute(CommandListEnum ...$commands): CommandResultObject|false;
 }

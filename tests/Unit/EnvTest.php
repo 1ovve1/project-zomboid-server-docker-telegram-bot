@@ -2,7 +2,7 @@
 
 namespace PZBot\Tests\Unit;
 use PHPUnit\Framework\TestCase;
-use PZBot\Env;
+use PZBot\Config\Env;
 use PZBot\Exceptions\Unchecked\EnvParameterNotFoundException;
 
 class EnvTest extends TestCase

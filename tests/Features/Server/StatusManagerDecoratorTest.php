@@ -11,13 +11,13 @@ use PZBot\Server\Commands\Factories\ExecutorFactory;
 use PZBot\Server\Factories\ManagerFactory;
 use PZBot\Server\Factories\ManagerFactoryInterface;
 use PZBot\Server\Factories\StatusManagerFactory;
-use PZBot\Server\StatusEnum;
+use PZBot\Server\ServerStatusEnum;
 use PZBot\Tests\Mock\Server\Commands\Bash\MockBashCommandResolver;
 use PZBot\Tests\Mock\Server\Commands\Bash\MockBashCommandResolverError;
 
 class StatusManagerDecoratorTest extends TestCase
 {
-  const DEAFULT_SERVER_STATUS = StatusEnum::UNDEFINED;
+  const DEAFULT_SERVER_STATUS = ServerStatusEnum::UNDEFINED;
 
   protected ManagerFactoryInterface $managerFactory;
   protected ManagerFactoryInterface $managerFactoryWithError;

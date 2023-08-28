@@ -9,7 +9,7 @@ class ChatGptDialog extends QueryBuilder implements MigrateAble
 {
   const DEFAULT_TOKEN_SIZE = 4097;
   
-  static function collectMessageHistoryFromUserId(int $userId, int $limit = 20): array
+  static function collectMessageHistoryFromUserId(int $userId, int $limit): array
   {
     $queryBox = ChatGptDialog::select(["role", "content"])
       ->where(["user_id"], $userId)
@@ -18,17 +18,6 @@ class ChatGptDialog extends QueryBuilder implements MigrateAble
       ->save();
 
     $messageHistory = $queryBox->fetchAll();
-      
-    // TODO: this is really huge overhead i think
-    $totalMessagesString = array_reduce(
-      $messageHistory,
-      fn($acc, $x) => $acc .= $x["content"],
-      ''
-    );
-    
-    if (strlen($totalMessagesString) >= $_ENV["BOT_CHATGPT_TOKEN_LENGTH"] ?? self::DEFAULT_TOKEN_SIZE) {
-      return self::collectMessageHistoryFromUserId($userId, $limit - 1);
-    }
 
     return array_reverse($messageHistory);
   }

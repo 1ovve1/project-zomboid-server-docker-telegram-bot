@@ -4,16 +4,18 @@ namespace PZBot\Tests\Features\Service\LogsParser;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use PZBot\Service\LogsParser\DTO\UserActivityObject;
-use PZBot\Service\LogsParser\UserStatusEnum;
-use PZBot\Tests\Mock\Service\LogsParser\MockUserStatusParser;
+use PZBot\Service\LogsParser\ParserInterface;
+use PZBot\Service\LogsParser\User\UserStatusEnum;
+use PZBot\Tests\Mock\Service\LogsParser\MockLogsParserFactory;
 
 class UserStatusParserTest extends TestCase
 {
-  protected MockUserStatusParser $parser;
+  protected ParserInterface $parser;
 
   function setUp(): void
   {
-    $this->parser = new MockUserStatusParser;
+    $factory = new MockLogsParserFactory;
+    $this->parser = $factory->getUserStatusParser();
 
     parent::setUp();
   }

@@ -1,0 +1,23 @@
+[08-08-23 08:25:50.945] LOG  : Network     , 1691483150944> 44,971,303> Initialising RakNet....
+[08-08-23 08:25:50.958] LOG  : Network     , 1691483150958> 44,971,317> [08-08-23 08:25:50.958] > ZNet: [-> CZombienet: RakNetPeerInterface_Init.
+[08-08-23 08:25:50.958] LOG  : Network     , 1691483150958> 44,971,317> [08-08-23 08:25:50.958] > ZNet: [-> CZombienet: RakNetPeerInterface_SetMaximumIncomingConnections.
+[08-08-23 08:25:50.965] LOG  : Network     , 1691483150965> 44,971,324> [08-08-23 08:25:50.965] > ZNet: [-> CZombienet: RakNetPeerInterface_SetServerPort.
+[08-08-23 08:25:50.966] LOG  : Network     , 1691483150966> 44,971,325> [08-08-23 08:25:50.966] > ZNet: [-> CZombienet: RakNetPeerInterface_SetIncomingPassword.
+[08-08-23 08:25:51.011] LOG  : Network     , 1691483151011> 44,971,370> [08-08-23 08:25:51.011] > ZNet: [-> CZombienet: RakNetPeerInterface_SetOccasionalPing.
+[08-08-23 08:25:51.011] LOG  : Network     , 1691483151011> 44,971,370> [08-08-23 08:25:51.011] > ZNet: [-> CZombienet: RakNetPeerInterface_Startup.
+[08-08-23 08:25:51.011] LOG  : Network     , 1691483151011> 44,971,370> [08-08-23 08:25:51.011] > ZNet: Startup version 41.78.16.
+[08-08-23 08:25:51.034] LOG  : Network     , 1691483151033> 44,971,392> [08-08-23 08:25:51.033] > ZNet: Zomboid Steam Server started, ports 16262 and 16261 must be open on the router.
+[08-08-23 08:25:51.069] LOG  : Network     , 1691483151069> 44,971,428> [08-08-23 08:25:51.069] > ZNet: SRakNet -> SZombienet: OnRakPeerStartup.
+[08-08-23 08:25:51.069] LOG  : Network     , 1691483151069> 44,971,428> [08-08-23 08:25:51.069] > ZNet: OnRakPeerStartup.
+[08-08-23 08:25:51.079] LOG  : Network     , 1691483151079> 44,971,438> [08-08-23 08:25:51.079] > ZNet: GetRakPeerInterface GetSockets receives 2 sockets.
+[08-08-23 08:25:51.079] LOG  : Network     , 1691483151079> 44,971,438> [08-08-23 08:25:51.079] > ZNet: SZombienet -> SSteamSDK: InitRelayNetworkAccess.
+[08-08-23 08:25:51.247] LOG  : Network     , 1691483151247> 44,971,606> [08-08-23 08:25:51.247] > ZNet: SZombienet -> SRakNet: SetSocketLayerOverride this.
+[08-08-23 08:25:51.248] LOG  : Network     , 1691483151248> 44,971,607> RakNet.Startup() return code: 0 (0 means success).
+[08-08-23 08:25:51.251] LOG  : Network     , 1691483151251> 44,971,610> *** SERVER STARTED ****.
+[08-08-23 08:25:51.252] LOG  : Network     , 1691483151251> 44,971,610> *** Steam is enabled.
+[08-08-23 08:25:51.252] LOG  : Network     , 1691483151252> 44,971,611> Server is listening on port 16261 (for Steam connection) and port 16262 (for UDPRakNet connection).
+[08-08-23 08:25:51.252] LOG  : Network     , 1691483151252> 44,971,611> Clients should use 16261 port for connections.
+[08-08-23 08:25:51.252] LOG  : General     , 1691483151252> 44,971,611> LuaNet: Initializing....
+[08-08-23 08:25:51.253] LOG  : General     , 1691483151253> 44,971,612> LuaNet: Registering server listener....
+[08-08-23 08:25:51.253] LOG  : General     , 1691483151253> 44,971,612> LuaNet: Initialization [DONE], triggering events for 'LuaNet.onInitAdd'..
+[08-08-23 08:25:51.253] LOG  : Network     , 1691483151253> 44,971,612> DISCORD: token not configured.

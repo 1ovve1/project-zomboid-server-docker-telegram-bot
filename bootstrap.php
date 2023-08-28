@@ -9,6 +9,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use QueryBox\DBFacade;
 
 /**
  * Global constants
@@ -31,6 +32,12 @@ foreach ($_ENV as $name => &$param) {
     $param = BASE_DIR . '/' . $param;
   }
 }
+$_ENV["BASE_DIR"] = basename(__DIR__);
+
+/**
+ * Initialize global BD facade
+ */
+DBFacade::registerGlobalDB($_ENV, true);
 
 /**
  * Initialize logger instance
@@ -51,3 +58,20 @@ TelegramLog::initialize(
       ->setFormatter(new LineFormatter(null, null, false, true)),
   ])
 );
+
+/**
+ * Helpers section
+ */
+
+/**
+ * Get param from config
+ *
+ * @param string $key
+ * @param mixed $default
+ * @return void
+ * @throws \PZBot\Exceptions\Unchecked\EnvParameterNotFoundException - if default section is not pass
+ */
+function env(string $key, mixed $default = null): mixed
+{
+    return (new \PZBot\Config\Env())->get($key, $default);
+}

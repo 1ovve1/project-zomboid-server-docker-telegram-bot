@@ -27,10 +27,10 @@ class Executor implements ExecutorInterface
 
   /**
    * @param CommandListEnum ...$commands
-   * @return CommandResultObject
+   * @return CommandResultObject|false
    * @throws ExecutorCommandException - if safeMod === true and command fails
    */
-  function execute(CommandListEnum ...$commands): CommandResultObject
+  function execute(CommandListEnum ...$commands): CommandResultObject|false
   {
     foreach ($commands as $command) {
       $commandResolve = $this->resolver->resolve($command);
@@ -47,6 +47,6 @@ class Executor implements ExecutorInterface
       }
     }
 
-    return $commandResult;
+    return $commandResult ?? false;
   }
 }

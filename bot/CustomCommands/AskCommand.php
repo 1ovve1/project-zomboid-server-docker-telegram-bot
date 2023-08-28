@@ -4,6 +4,7 @@ namespace PZBot\CustomCommands;
 
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\TelegramLog;
 use PZBot\Commands\AbstractCommand;
 use PZBot\Service\OpenAI\ChatGpt;
 use Throwable;
@@ -42,7 +43,9 @@ class AskCommand extends AbstractCommand
 
   function createHook(): void
   {
-      $this->chatGpt = ChatGpt::fromEnv($this->appConfig);
+    parent::createHook();
+    
+    $this->chatGpt = ChatGpt::fromEnv();
   }
 
   /**
@@ -55,16 +58,12 @@ class AskCommand extends AbstractCommand
   {
     $question = $this->getMessageText();
 
-    $limit = $this->appConfig->get("BOT_CHATGPT_USER_MSG_LENGTH", 500);
+    $limit = env("BOT_CHATGPT_USER_MSG_LENGTH", 500);
     if (strlen($question) >= $limit) {
       return $this->replyToChat("Too many symbols! Please use less than {$limit} chars in your message.");
     }
 
-    try {
-      $choice = $this->chatGpt->answer($this->user->getId(), $question);
-    } catch (Throwable $e) {
-      return $this->replyToChat($e->getMessage(), ["reply_to_message_id" => $this->message->getMessageId()]);
-    }
+    $choice = $this->chatGpt->answer($this->user->getId(), $question);
 
     return $this->replyToChat($choice->message->content, ["reply_to_message_id" => $this->message->getMessageId()]);
   }

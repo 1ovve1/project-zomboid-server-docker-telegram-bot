@@ -10,3 +10,4 @@ workshop-mods/*
 /composer.lock
 /.phpunit.cache
 /.vscode
+/.idea

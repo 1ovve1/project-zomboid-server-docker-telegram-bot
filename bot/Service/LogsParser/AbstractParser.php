@@ -4,65 +4,164 @@ namespace PZBot\Service\LogsParser;
 
 use PZBot\Exceptions\Checked\LogsFilePremissionDeniedException;
 use PZBot\Exceptions\Checked\LogsFileWasNotFoundedException;
+use PZBot\Service\LogsParser\DTO\UniqueDTOInterface;
 
 abstract class AbstractParser implements ParserInterface
 {
-  private string $filePath;
-  protected array $file;
+  /**
+   * @var array<ParserOptionsEnum>
+   */
+  protected readonly array $options;
+  /**
+   * @var integer|null - read lines limit
+   */
+  protected ?int $limit = null;
+  /**
+   * @var array<string>
+   */
+  protected array $collection = [];
 
-  function __construct()
+  /**
+   * Create instance
+   *
+   * @param ParserOptionsEnum ...$options
+   * @return self
+   * @throws LogsFileWasNotFoundedException
+   * @throws LogsFilePremissionDeniedException
+   */
+  static function create(ParserOptionsEnum ...$options): self
   {
-    $this->filePath = $this->getFilePath();
-
-    $this->checkFileExists();
-
-    $this->file = array_reverse($this->open());
+    return new static(...$options);
   }
 
+  /**
+   * @param ParserOptionsEnum ...$options
+   * @throws LogsFileWasNotFoundedException
+   * @throws LogsFilePremissionDeniedException
+   */
+  function __construct(ParserOptionsEnum ...$options)
+  {
+    $this->options = $options;
+  }
+
+  /**
+   * Check option in options array field
+   *
+   * @param ParserOptionsEnum $option
+   * @return boolean
+   */
+  private function isOption(ParserOptionsEnum $option): bool
+  {
+    return in_array($option, $this->options);
+  }
+
+  /**
+   * Parse data and return array
+   *
+   * @return array
+   * @throws LogsFilePremissionDeniedException
+   * @throws LogsFileWasNotFoundedException
+   */
   function parse(): array
   {
-    $collection = [];
+    $file = new File($this->getFilePath());
 
-    foreach ($this->file as $line) {
-      preg_match($this->getRegExp(), $line, $mathces);
+    $generator = match($this->isOption(ParserOptionsEnum::FROM_TOP)) {
+      true => $file->openReverse(),
+      default => $file->open()
+    };
 
-      if (empty($mathces)) {
+    foreach ($generator as $counter => $line) {
+      preg_match($this->getRegExp(), $line, $matches);
+
+      if (empty($matches)) {
         continue;
       }
 
-      $dto = $this->matchHandler($mathces);
+      $dto = $this->matchHandler($matches);
+      $this->resolveData($dto);
 
-      $key = $dto->getId();
-
-      if (!isset($collection[$key])) {
-        $collection[$key] = $dto;
+      if ($this->isOption(ParserOptionsEnum::ONCE) || $this->limitReached($counter)) {
+        break;
       }
     }
 
-    return $collection;
+    return $this->getCollection();
   }
 
-  private function checkFileExists(): void
+  /**
+   * Resolve data by options
+   *
+   * @param UniqueDTOInterface $dto
+   * @return void
+   */
+  function resolveData(UniqueDTOInterface $dto): void
   {
-    if (!glob($this->filePath)) {
-      if (!glob(BASE_DIR . '/' . $this->filePath)) {
-        throw new LogsFileWasNotFoundedException($this->filePath);
-      } else {
-        $this->filePath = BASE_DIR . '/' . $this->filePath;
-      }
+    if ($this->isOption(ParserOptionsEnum::UNIQUE)) {
+      $this->addCollectionUnique($dto);
+    } else { 
+      $this->addCollection($dto);
     }
-
-    $this->filePath = glob($this->filePath)[0];
   }
 
-  private function open() 
+  /**
+   * Add DTO into collection
+   * Check if this DTO unique
+   *
+   * @param UniqueDTOInterface $dto
+   * @return void
+   */
+  protected function addCollectionUnique(UniqueDTOInterface $dto): void
   {
-    $file = file($this->filePath, FILE_IGNORE_NEW_LINES);
+    $key = $dto->getId();
 
-    if (is_bool($file)) {
-      throw new LogsFilePremissionDeniedException($this->filePath);
+    if (!key_exists($key, $this->collection)) {
+      $this->addCollection($dto, $key);
     }
+  }
 
-    return $file;
+  /**
+   * @param UniqueDTOInterface $dto
+   * @param string|integer|null|null $key
+   * @return void
+   */
+  protected function addCollection(UniqueDTOInterface $dto, string|int|null $key = null): void
+  {
+    if (is_null($key)) {
+      $this->collection[] = $dto;
+    } else {
+      $this->collection[$key] = $dto;
+    }
+  }
+
+  /**
+   * @return array<string>
+   */
+  protected function getCollection(): array
+  {
+    return $this->collection;
+  }
+
+  /**
+   * Set limit by value
+   *
+   * @param integer $limit
+   * @return self
+   */
+  function setLimit(int $limit): self
+  {
+    $this->limit = $limit;
+    return $this;
+  }
+
+  /**
+   * Check if limit reached (require counter)
+   *
+   * @param integer $counter
+   * @return boolean
+   */
+  protected function limitReached(int $counter): bool
+  {
+    return ($this->limit ?? PHP_INT_MAX) < $counter;
   }
 }
