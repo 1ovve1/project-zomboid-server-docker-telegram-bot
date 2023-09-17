@@ -9,37 +9,38 @@ class ChatGptDialog extends QueryBuilder implements MigrateAble
 {
   const DEFAULT_TOKEN_SIZE = 4097;
   
-  static function collectMessageHistoryFromUserId(int $userId, int $limit): array
+  static function collectMessageHistoryFromUserId(int $userId, bool $dan = false): array
   {
-    $queryBox = ChatGptDialog::select(["role", "content"])
+    $queryBox = ChatGptDialog::select()
       ->where(["user_id"], $userId)
+      ->andWhere(["dan"], $dan)
       ->orderBy(["id"], false)
-      ->limit($limit)
+      ->limit(50)
       ->save();
 
     $messageHistory = $queryBox->fetchAll();
 
-    return array_reverse($messageHistory);
+    return $messageHistory;
   }
 
-  static function addMessageUser(int $userId, $content): void
+  static function addMessageUser(int $userId, string $userAnswer, int $tokenSize, bool $dan = false): void
   {
-    self::addMessage($userId, "user", $content);
+    self::addMessage($userId, $userAnswer, "user",   $tokenSize, $dan);
   }
 
-  static function addMessageBot(int $userId, CreateResponseChoice $choice): void
+  static function addMessageBot(int $userId, string $botAnswer, string $botRole, int $tokenSize, bool $dan = false): void
   {
-    $botMessage = $choice->message;
-
-    self::addMessage($userId, $botMessage->role, $botMessage->content);
+    self::addMessage($userId, $botAnswer, $botRole, $tokenSize, $dan);
   }
 
-  static function addMessage(int $userId, string $role, string $content): void
+  static function addMessage(int $userId, string $content, string $role, int $tokenSize, bool $dan = false): void
   {
     ChatGptDialog::insert([
       "user_id" => $userId,
       "role" => $role,
-      "content" => $content
+      "content" => $content,
+      "token_size" => $tokenSize,
+      "dan" => $dan
     ])->save();
   }
 
@@ -51,6 +52,8 @@ class ChatGptDialog extends QueryBuilder implements MigrateAble
         'user_id' => "BIGINT UNSIGNED NOT NULL",
         "role" => "CHAR(10) NOT NULL",
         "content" => "TEXT NOT NULL",
+        "token_size" => "INT NOT NULL",
+        "dan" => "BOOLEAN NOT NULL DEFAULT false"
       ]
     ];
   }

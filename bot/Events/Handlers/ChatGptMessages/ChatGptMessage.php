@@ -33,21 +33,19 @@ abstract class ChatGptMessage implements HandlerInterface
   public function __invoke(mixed ...$params): void
   {
     foreach ($params as $message) {
-      $choice = $this->chatGpt->answerWithoutUserId(
+      $answer = $this->chatGpt->answerWithoutUserIdAndMemory(
           sprintf(
               $this->getMessageFormat(),
               $message
           )
       );
 
-      $content = $choice->message->content;
-
       try {
         $imagePath = $this->imageResolver->getRandomPicturePathUnique($this->getImageFolder());
 
-        TelegramRequestHelper::sendImageToAllGroups($imagePath, $content);
+        TelegramRequestHelper::sendImageToAllGroups($imagePath, $answer);
       } catch (PathWasNotFoundException) {
-        TelegramRequestHelper::sendMessageToAllGroups($content);
+        TelegramRequestHelper::sendMessageToAllGroups($answer);
       }
     }
   }

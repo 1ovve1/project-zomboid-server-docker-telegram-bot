@@ -4,27 +4,25 @@ namespace PZBot\CustomCommands;
 
 use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
-use Longman\TelegramBot\TelegramLog;
 use PZBot\Commands\AbstractCommand;
 use PZBot\Service\OpenAI\ChatGpt;
-use Throwable;
 
-class AskCommand extends AbstractCommand
+class DanCommand extends AbstractCommand
 {
   /**
    * @var string
    */
-  protected $name = 'ask';
+  protected $name = 'dan';
 
   /**
    * @var string
    */
-  protected $description = 'Ask bot';
+  protected $description = 'Ask chat gpt as dan';
 
   /**
    * @var string
    */
-  protected $usage = '/ask';
+  protected $usage = '/dan';
 
   /**
    * @var string
@@ -58,7 +56,7 @@ class AskCommand extends AbstractCommand
   {
     $question = $this->getMessageText();
 
-    $answer = $this->chatGpt->answer($this->user->getId(), $question);
+    $answer = $this->chatGpt->answer($this->user->getId(), $question, true, true);
 
     return $this->replyToChat($answer, ["reply_to_message_id" => $this->message->getMessageId()]);
   }
